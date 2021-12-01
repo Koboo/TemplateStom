@@ -67,13 +67,13 @@ public final class Server {
                                                   final int chunkZ) {
                         for (byte x = 0; x < Chunk.CHUNK_SIZE_X; x++) {
                             for (byte z = 0; z < Chunk.CHUNK_SIZE_Z; z++) {
-                                for (byte y = 0; y < 40; y++) {
+                                batch.setBlock(x, 0, z, Block.BEDROCK);
+                                for (byte y = 1; y <= 40; y++) {
                                     batch.setBlock(x, y, z, Block.STONE);
                                 }
                                 batch.setBlock(x, 41, z, Block.DIRT);
                                 batch.setBlock(x, 42, z, Block.DIRT);
-                                batch.setBlock(x, 43, z, Block.DIRT);
-                                batch.setBlock(x, 44, z, Block.GRASS_BLOCK);
+                                batch.setBlock(x, 43, z, Block.GRASS_BLOCK);
                             }
                         }
                     }
