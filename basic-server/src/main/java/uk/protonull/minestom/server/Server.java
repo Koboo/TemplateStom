@@ -27,7 +27,6 @@ import java.util.Arrays;
 import java.util.List;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
-import net.minestom.server.entity.Player;
 import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.player.PlayerLoginEvent;
 import net.minestom.server.instance.Chunk;
@@ -90,10 +89,9 @@ public final class Server {
                     }
                 });
                 final GlobalEventHandler globalEventHandler = MinecraftServer.getGlobalEventHandler();
-                globalEventHandler.addListener(PlayerLoginEvent.class, (event) -> {
-                    final Player player = event.getPlayer();
+                globalEventHandler.addListener(PlayerLoginEvent.class, (final PlayerLoginEvent event) -> {
                     event.setSpawningInstance(instanceContainer);
-                    player.setRespawnPoint(new Pos(0, 45, 0));
+                    event.getPlayer().setRespawnPoint(new Pos(0, 44, 0));
                 });
             }
 
