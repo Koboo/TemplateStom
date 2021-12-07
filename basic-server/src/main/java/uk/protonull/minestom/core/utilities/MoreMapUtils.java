@@ -23,13 +23,13 @@
 package uk.protonull.minestom.core.utilities;
 
 import com.google.common.collect.BiMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
-import org.apache.commons.collections4.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
 
 public final class MoreMapUtils {
@@ -57,8 +57,8 @@ public final class MoreMapUtils {
      * Retrieves a key from a map based on a given value. If two or more keys share a value,
      * the key that's returned is the first that matches during standard iteration.
      *
-     * @param <K> The key type.
-     * @param <V> The value type.
+     * @param <K> The type of the map's keys.
+     * @param <V> The type of the map's values.
      * @param map The map to retrieve the key from.
      * @param value The value to base the search on.
      * @return Returns the key, or null.
@@ -79,20 +79,20 @@ public final class MoreMapUtils {
     /**
      * Attempts to retrieve a value from a given map from a range of keys.
      *
-     * @param <K> The key type of the map.
-     * @param <V> The value type of the map.
+     * @param <K> The type of the map's keys.
+     * @param <V> The type of the map's values.
      * @param <R> The desired return type.
-     * @param map The map to retrieve the value from. If this is null or empty,
-     * @param parser The function to process the value from the map. Null will use a default parser.
+     * @param map The map to retrieve the value from.
+     * @param keys The keys to retrieve the value from in order of appearance.
+     * @param parser The function to process the value from the map.
      * @param fallback The value that should be returned if none of the keys return a [valid] value.
-     * @param keys The keys to check.
      * @return Returns a value, either from the keys or the fallback, both of which may be null.
      */
     public static <K, V, R> R attemptGet(@NotNull final Map<K, V> map,
-                                         @NotNull final List<K> keys,
+                                         @NotNull final Set<K> keys,
                                          @NotNull final Function<V, R> parser,
                                          final R fallback) {
-        if (map.isEmpty() || CollectionUtils.isEmpty(keys)) {
+        if (map.isEmpty() || keys.isEmpty()) {
             return fallback;
         }
         for (final K key : keys) {
@@ -111,14 +111,14 @@ public final class MoreMapUtils {
     /**
      * Sets all the given keys a particular value.
      *
-     * @param <K> The type of the map's key.
+     * @param <K> The type of the map's keys.
      * @param <V> The type of the map's values.
      * @param map The map to set to.
      * @param keys The keys to set the value for.
      * @param value The value to set.
      */
     public static <K, V> void setMultipleKeys(@NotNull final Map<K, V> map,
-                                              @NotNull final List<K> keys,
+                                              @NotNull final Set<K> keys,
                                               final V value) {
         for (final K key : keys) {
             map.put(key, value);
@@ -126,8 +126,29 @@ public final class MoreMapUtils {
     }
 
     /**
+     * Computes all elements of a given map.
+     *
+     * @param <K> The type of the map's keys.
+     * @param <V> The type of the map's values.
+     * @param map The map to compute.
+     * @param computer The computing function, which should return the new value for the given key.
+     */
+    public static <K, V> void computeEntries(@NotNull final Map<K, V> map,
+                                             @NotNull final BiFunction<K, V, V> computer) {
+        for (final Map.Entry<K, V> entry : map.entrySet()) {
+            final V beforeValue = entry.getValue();
+            final V afterValue = computer.apply(entry.getKey(), beforeValue);
+            if (beforeValue != afterValue) { // Use reference equals for quicker comparison
+                entry.setValue(afterValue);
+            }
+        }
+    }
+
+    /**
+     * Generates a new map where the String keys are case-insensitive.
+     *
      * @param <T> The type of the map's values.
-     * @return Returns a new TreeMap with a String keys that are <b>NOT</b> case-sensitive.
+     * @return Returns a new TreeMap with String keys that are <b>NOT</b> case-sensitive.
      */
     @NotNull
     public static <T> TreeMap<String, T> newStringKeyMap() {
