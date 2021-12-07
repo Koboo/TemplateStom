@@ -10,7 +10,6 @@
   <packaging>pom</packaging>
 
   <name>BasicMinestomParent</name>
-  <url>https://github.com/Civstom/ParentPOM/</url>
 
   <properties>
     <maven.compiler.source>17</maven.compiler.source>
