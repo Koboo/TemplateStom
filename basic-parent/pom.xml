@@ -76,7 +76,7 @@
               <artifactSet>
                 <excludes>
                   <!-- Psuedo Provided -->
-                  <exclude>com.github.civstom:CivServer</exclude>
+                  <exclude>uk.protonull.minestom:basicstom-server</exclude>
                 </excludes>
               </artifactSet>
             </configuration>
