@@ -18,10 +18,6 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
 
-  <prerequisites>
-    <maven>3.8.3</maven>
-  </prerequisites>
-
   <build>
     <defaultGoal>clean install</defaultGoal>
     <finalName>${project.name}-${project.version}</finalName>
@@ -32,6 +28,25 @@
       </resource>
     </resources>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-maven</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>3.8.4</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -121,6 +136,12 @@
     </plugins>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-enforcer-plugin -->
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
         <plugin>
           <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
           <groupId>org.apache.maven.plugins</groupId>
