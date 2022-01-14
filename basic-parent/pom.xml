@@ -88,12 +88,6 @@
             </goals>
             <configuration>
               <createDependencyReducedPom>false</createDependencyReducedPom>
-              <artifactSet>
-                <excludes>
-                  <!-- Psuedo Provided -->
-                  <exclude>uk.protonull.minestom:basicstom-server</exclude>
-                </excludes>
-              </artifactSet>
             </configuration>
           </execution>
         </executions>
