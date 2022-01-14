@@ -116,13 +116,6 @@
             <configuration>
               <failOnWarnings>false</failOnWarnings>
               <failOnError>false</failOnError>
-              <tags>
-                <tag>
-                  <name>apiNote</name>
-                  <placement>a</placement>
-                  <head>API Note:</head>
-                </tag>
-              </tags>
             </configuration>
           </execution>
         </executions>
