@@ -26,6 +26,7 @@ import java.util.Objects;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.extensions.DiscoveredExtension;
 import net.minestom.server.extensions.Extension;
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
@@ -62,7 +63,21 @@ public abstract class BetterExtension extends Extension {
      * Disables this extension.
      */
     public void disable() {
-        MinecraftServer.getExtensionManager().unloadExtension(getName());
+        // TODO: Have to do this because Minestom made the method private for some reason
+        try {
+            MethodUtils.invokeExactMethod(
+                    MinecraftServer.getExtensionManager(),
+                    "unloadExtension",
+                    new Object[]{
+                            getName()
+                    },
+                    new Object[] {
+                            String.class
+                    });
+        }
+        catch (final Throwable thrown) {
+            throw new RuntimeException("Could not disable extension: " + getName(), thrown);
+        }
     }
 
 }

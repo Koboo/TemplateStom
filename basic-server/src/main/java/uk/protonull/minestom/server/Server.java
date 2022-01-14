@@ -23,7 +23,6 @@
 package uk.protonull.minestom.server;
 
 import uk.protonull.minestom.server.commands.StopCommand;
-import java.util.Arrays;
 import java.util.List;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
@@ -36,17 +35,12 @@ import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.InstanceManager;
 import net.minestom.server.instance.batch.ChunkBatch;
 import net.minestom.server.instance.block.Block;
-import net.minestom.server.world.biomes.Biome;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class Server {
 
     public static final MinecraftServer SERVER = MinecraftServer.init(); // it's already initialised by Bootstrap
-
-    private static final String DEFAULT_HOST = "0.0.0.0";
-    private static final int DEFAULT_PORT = 25565;
-    private static final boolean DEFAULT_USE_BASIC = false;
 
     public static void main(final String[] arguments) {
         try {
@@ -76,12 +70,6 @@ public final class Server {
                             }
                         }
                     }
-                    @Override
-                    public void fillBiomes(@NotNull final Biome[] biomes,
-                                           int chunkX,
-                                           int chunkZ) {
-                        Arrays.fill(biomes, Biome.PLAINS);
-                    }
                     @Nullable
                     @Override
                     public List<ChunkPopulator> getPopulators() {
@@ -96,14 +84,14 @@ public final class Server {
             }
 
             // Start the server
-            calledBeforeStart();
             final String host = getHost();
             final int port = getPort();
             SERVER.start(host, port);
             MinecraftServer.LOGGER.info("Server: " + host + ":" + port);
-        } catch (final Throwable thrown) {
+        }
+        catch (final Throwable thrown) {
             MinecraftServer.LOGGER.error("An error occurred while trying to start the server.", thrown);
-            System.exit(1); // Do not fallback to Bootstrap
+            System.exit(1);
         }
     }
 
@@ -111,19 +99,24 @@ public final class Server {
         MinecraftServer.LOGGER.warn("", thrown);
     }
 
+    private static final String DEFAULT_HOST = "0.0.0.0";
     private static String getHost() {
         return System.getProperty("host", DEFAULT_HOST);
     }
 
+    private static final int DEFAULT_PORT = 25565;
     private static int getPort() {
+        final String property = System.getProperty("port", Integer.toString(DEFAULT_PORT));
         try {
-            return Integer.parseInt(System.getProperty("port", Integer.toString(DEFAULT_PORT)));
+            return Integer.parseInt(property);
         }
         catch (final NullPointerException | NumberFormatException ignored) {
+            MinecraftServer.LOGGER.warn("Could not parse [" + property + "] as a valid port, defaulting to: " + DEFAULT_PORT);
             return DEFAULT_PORT;
         }
     }
 
+    private static final boolean DEFAULT_USE_BASIC = false;
     private static boolean useBasicServer() {
         try {
             return Boolean.parseBoolean(System.getProperty("useBasic", Boolean.toString(DEFAULT_USE_BASIC)));
@@ -131,13 +124,6 @@ public final class Server {
         catch (final NullPointerException | NumberFormatException ignored) {
             return DEFAULT_USE_BASIC;
         }
-    }
-
-    /**
-     * This is purely a mixin hook. Use this to inject code prior to the server being initiated.
-     */
-    public static void calledBeforeStart() {
-
     }
 
 }
