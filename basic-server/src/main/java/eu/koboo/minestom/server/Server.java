@@ -21,6 +21,24 @@ public class Server {
         Logger.info("Initializing console..");
         Console console = new Console();
 
+        // TODO: Config values
+        // host
+        // mc-port
+        // query-enable
+        //   port
+        // proxy-mode (none, bungee, velocity)
+        //   velocity-secret
+        // optifine-support
+        // open-to-lan
+        //   otl-config
+
+        //MojangAuth.init();
+        //VelocityProxy.enable("");
+        //BungeeCordProxy.enable();
+        //OptifineSupport.enable();
+        //Query.start(port)
+        //OpenToLAN.open()
+
         Logger.info("Initializing server..");
         MinecraftServer minecraftServer = MinecraftServer.init();
         MinecraftServer.setTerminalEnabled(false);
@@ -41,6 +59,7 @@ public class Server {
             event.getPlayer().setRespawnPoint(new Pos(0, 44, 0));
         });
 
+        // TODO: Config
         String host = "0.0.0.0";
         int port = 25565;
         Logger.info("Starting @ " + host + ":" + port);

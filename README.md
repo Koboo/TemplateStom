@@ -12,6 +12,9 @@
 * log-Files
 * world-saving
 * (Maybe) WrappedNBT
+* Custom Chunk Generators
+    * [MinestomVanillaGen](https://github.com/Flamgop/MinestomVanillaGen)
+    * [TerraGenerationExtension](https://github.com/KrystilizeNevaDies/TerraGenerationExtension)
 
 ## Requirements
 
