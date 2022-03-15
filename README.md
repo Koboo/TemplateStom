@@ -24,3 +24,4 @@ These things are required for use:
 
 * Project structure [BasicMinestomServer](https://github.com/Protonull/BasicMinestomServer)
 * Console implementation [Sabre](https://github.com/Project-Cepi/Sabre)
+* Command implementation [VanillaFeatures](https://github.com/JustDoom/VanillaFeatures)
