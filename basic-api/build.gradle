@@ -1,0 +1,30 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+publishing {
+    repositories {
+        maven {
+            url = 'http://repo.koboo.eu/releases'
+            credentials {
+                username = System.getenv('REPO_USER')
+                password = System.getenv('REPO_TOKEN')
+            }
+        }
+    }
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+compileJava {
+    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_17
+}
+
+dependencies {
+
+}

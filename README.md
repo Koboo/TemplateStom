@@ -1,9 +1,26 @@
 # BasicMinestomServer
 
-This an ***EXTREMELY*** basic Minestom server in that it produces a jar that
-will run, but does little more than that. It does however add a `/stop` command,
-so closing down your server is now native to the server itself.
 
-## Environment
+## Features
 
-This server requires Java 17.
+* ``stop`` Command
+* ``gamemode`` Command
+* Colorful Console
+
+## TODO:
+
+* log-Files
+* world-saving
+* (Maybe) WrappedNBT
+
+## Requirements
+
+These things are required for use:
+
+* Java 17
+* Minecraft 1.18.2
+
+## Credits
+
+* Project structure [BasicMinestomServer](https://github.com/Protonull/BasicMinestomServer)
+* Console implementation [Sabre](https://github.com/Project-Cepi/Sabre)

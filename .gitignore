@@ -1,6 +1,14 @@
+# Minestom
 minecraft_data/
 instances/
+extensions/
 .minestom_tmp
+
+# Ignored
+basic-server/build/
+basic-api/build/
+.idea
+.gradle
 
 # Created by https://www.toptal.com/developers/gitignore/api/vim,java,linux,macos,emacs,windows,eclipse,notepadpp,intellij+all,visualstudiocode,maven
 # Edit at https://www.toptal.com/developers/gitignore?templates=vim,java,linux,macos,emacs,windows,eclipse,notepadpp,intellij+all,visualstudiocode,maven

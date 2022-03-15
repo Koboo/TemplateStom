@@ -1,0 +1,31 @@
+plugins {
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+mainClassName = 'eu.koboo.minestom.server.Server'
+
+dependencies {
+    implementation 'com.github.Minestom:Minestom:db2d00819c'
+    implementation 'org.tinylog:slf4j-tinylog:2.4.1'
+    implementation 'org.jetbrains:annotations:23.0.0'
+
+    implementation 'org.fusesource.jansi:jansi:2.4.0'
+    implementation 'org.jline:jline:3.21.0'
+
+    implementation project(":basic-api")
+}
+
+compileJava {
+    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_17
+}
+
+shadowJar {
+    manifest {
+        attributes(
+                'Main-Class': mainClassName,
+                'Implementation-Version': project.version
+        )
+    }
+}

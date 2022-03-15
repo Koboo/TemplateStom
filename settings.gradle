@@ -1,0 +1,3 @@
+rootProject.name = 'basicstom'
+include(':basic-server')
+include(':basic-api')
