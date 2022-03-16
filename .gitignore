@@ -3,6 +3,8 @@ minecraft_data/
 instances/
 extensions/
 .minestom_tmp
+logs/
+server.yml
 
 # Ignored
 basic-server/build/
