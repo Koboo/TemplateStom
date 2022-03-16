@@ -9,6 +9,7 @@ import eu.koboo.minestom.server.commands.CommandFly;
 import eu.koboo.minestom.server.commands.CommandFlySpeed;
 import eu.koboo.minestom.server.commands.CommandGameMode;
 import eu.koboo.minestom.server.commands.CommandSpawn;
+import eu.koboo.minestom.server.commands.CommandSpectate;
 import eu.koboo.minestom.server.commands.CommandStop;
 import eu.koboo.minestom.server.commands.CommandTeleport;
 import eu.koboo.minestom.server.commands.CommandTeleportHere;
@@ -71,6 +72,7 @@ public class Server {
         MinecraftServer.getCommandManager().register(new CommandFlySpeed());
         MinecraftServer.getCommandManager().register(new CommandGameMode());
         MinecraftServer.getCommandManager().register(new CommandSpawn());
+        MinecraftServer.getCommandManager().register(new CommandSpectate());
         MinecraftServer.getCommandManager().register(new CommandStop());
         MinecraftServer.getCommandManager().register(new CommandTeleport());
         MinecraftServer.getCommandManager().register(new CommandTeleportHere());
