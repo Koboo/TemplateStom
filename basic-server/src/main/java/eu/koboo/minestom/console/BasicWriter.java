@@ -62,6 +62,9 @@ public class BasicWriter implements Writer {
 
     @Override
     public void close() {
+        if(Server.getInstance().getConsole() == null) {
+            return;
+        }
         Server.getInstance().getConsole().stop();
     }
 

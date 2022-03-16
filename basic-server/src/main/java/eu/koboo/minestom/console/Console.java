@@ -108,6 +108,9 @@ public class Console {
     }
 
     public void stop() {
+        if(consoleThread.isInterrupted()) {
+            return;
+        }
         consoleThread.interrupt();
     }
 
