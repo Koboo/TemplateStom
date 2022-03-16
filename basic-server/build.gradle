@@ -18,7 +18,6 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
 
     implementation project(":basic-api")
-    compileOnly 'com.github.Moulberry:Minestand:5c1fa24b75'
 }
 
 compileJava {
