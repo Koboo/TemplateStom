@@ -45,7 +45,6 @@ A big thanks to the authors, for open-sourcing their projects!
 ## ToDo
 
 * World Data (Save/Load - with Slime or Anvil)
-* Operator feature (``/operator``)
 * Extension Management through command?
 * Permissions?
 * More commands
