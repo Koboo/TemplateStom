@@ -3,9 +3,9 @@
 Fork of [BasicMinestomServer](https://github.com/Protonull/BasicMinestomServer).
 
 This is a fork of [Protonull's BasicMinestomServer](https://github.com/Protonull/BasicMinestomServer).
-Further developed and managed by [Koboo](https://github.com/Koboo). This is to
+Further, developed and managed by [Koboo](https://github.com/Koboo). This is to
 implement some functions of [Minestom](https://minestom.com) and make
-them configurable. Also some of the better known commands will be implemented
+them configurable. Also, some better known commands will be implemented
 directly.
 
 In the distant future an additional API may be added.
@@ -39,8 +39,9 @@ A big thanks to the authors, for open-sourcing their projects!
     * ``surface`` - Teleport yourself or other players to surface
     * ``teleport`` - Teleport to other players or player to player
     * ``teleporthere`` - Teleport other players to you
-* Async Log Files
+* Async Log File writing
 * Colors in Console (ColorCode support)
+* Operators (Only with permission level 4)
 
 ## ToDo
 
