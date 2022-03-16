@@ -38,7 +38,7 @@ public class ServerConsoleWriter implements Writer {
         Ansi ansi = Ansi.ansi();
 
         ansi = ansi.fgCyan().a("[" + time + "] ").reset();
-        ansi = ansi.a("[" + logEntry.getThread() + "] ").reset();
+        ansi = ansi.a("[" + logEntry.getThread().getName() + "] ").reset();
         ansi = ansi.fgYellow().a("[" + logEntry.getLevel().name() + "] ").reset();
         ansi = ansi.fgMagenta().a("[" + clazz + "] ").reset();
         ansi = appendWithColor(ansi, logEntry.getLevel(), logEntry.getMessage());
