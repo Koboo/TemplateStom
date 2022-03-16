@@ -5,7 +5,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.CommandResult;
 import net.minestom.server.command.builder.CommandResult.Type;
@@ -17,12 +19,10 @@ import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
-import org.tinylog.Logger;
 
 public class Console {
 
     private static final String CONSOLE_NAME = "basicstom-console";
-    private static final String CONSOLE_PROMPT = " > ";
 
     private final Thread consoleThread;
     private final Terminal terminal;
@@ -41,7 +41,6 @@ public class Console {
         lineReader = LineReaderBuilder.builder()
                 .terminal(terminal)
                 .appName(CONSOLE_NAME)
-                .variable(LineReader.SECONDARY_PROMPT_PATTERN, CONSOLE_PROMPT)
                 .completer((reader, line, candidates) -> {
                     Set<Command> commands = new HashSet<>(
                             MinecraftServer.getCommandManager().getDispatcher().getCommands());
@@ -71,7 +70,7 @@ public class Console {
                 String line;
                 while (!MinecraftServer.isStopping()) {
                     try {
-                        line = lineReader.readLine(CONSOLE_PROMPT);
+                        line = lineReader.readLine();
                     } catch (EndOfFileException eofe) {
                         continue;
                     }
@@ -81,10 +80,10 @@ public class Console {
                                 .execute(MinecraftServer.getCommandManager().getConsoleSender(), cmd);
                         if(result.getType() != Type.SUCCESS || result.getType() != Type.INVALID_SYNTAX) {
                             if(result.getType() == Type.CANCELLED) {
-                                Logger.info("The command '" + cmd + "' got cancelled.");
+                                Audiences.console().sendMessage(Component.text("The command '" + cmd + "' got cancelled."));
                             }
                             if(result.getType() == Type.UNKNOWN) {
-                                Logger.info("The command '" + cmd+ "' is unknown.");
+                                Audiences.console().sendMessage(Component.text("The command '" + cmd + "' is unknown."));
                             }
                         }
                     }
@@ -100,7 +99,7 @@ public class Console {
             }
         });
         consoleThread.setDaemon(true);
-        consoleThread.setName("TerminalConsole");
+        consoleThread.setName("ConsoleReader");
     }
 
     public void start() {
