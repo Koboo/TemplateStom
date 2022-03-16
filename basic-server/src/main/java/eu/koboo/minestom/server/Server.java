@@ -1,6 +1,7 @@
 package eu.koboo.minestom.server;
 
 import eu.koboo.minestom.config.ProxyConfig;
+import eu.koboo.minestom.config.QueryConfig;
 import eu.koboo.minestom.config.ServerConfig;
 import eu.koboo.minestom.console.Console;
 import eu.koboo.minestom.server.chunk.FlatGenerator;
@@ -18,6 +19,7 @@ import net.minestom.server.event.player.PlayerLoginEvent;
 import net.minestom.server.extras.MojangAuth;
 import net.minestom.server.extras.bungee.BungeeCordProxy;
 import net.minestom.server.extras.optifine.OptifineSupport;
+import net.minestom.server.extras.query.Query;
 import net.minestom.server.extras.velocity.VelocityProxy;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.InstanceManager;
@@ -32,6 +34,8 @@ public class Server {
     private final ServerConfig serverConfig;
     @Getter
     private final ProxyConfig proxyConfig;
+    @Getter
+    private final QueryConfig queryConfig;
 
     @Getter
     private final Console console;
@@ -45,13 +49,13 @@ public class Server {
         Logger.info("Loading Proxy settings..");
         proxyConfig = ProxyConfig.load();
 
+        Logger.info("Loading Query settings..");
+        queryConfig = QueryConfig.load();
+
         Logger.info("Initializing console..");
         console = new Console();
 
         // TODO: Config values
-        // query-enable
-        //   port
-        // optifine-support
         // open-to-lan
         //   otl-config
 
@@ -82,7 +86,17 @@ public class Server {
 
         String host = serverConfig.host();
         int port = serverConfig.port();
-        Logger.info("Starting @ " + host + ":" + port);
+
+        if(queryConfig.enable()) {
+            int queryPort = queryConfig.port();
+            if(queryPort == port) {
+                Logger.error("Server and Query port are equal (" + port + "=" + queryPort + ")! Abort!");
+                System.exit(0);
+                return;
+            }
+            Query.start(queryPort);
+            Logger.info("Started query @ 0.0.0.0:" + queryPort);
+        }
 
         if(serverConfig.optifineSupport()) {
             OptifineSupport.enable();
@@ -108,6 +122,7 @@ public class Server {
                 Logger.info("ProxyMode 'BUNGEECORD', enabled BungeeCordProxy.");
             }
         }
+        Logger.info("Starting @ " + host + ":" + port);
 
         minecraftServer.start(host, port);
         Logger.info("Listening on " + host + ":" + port);
