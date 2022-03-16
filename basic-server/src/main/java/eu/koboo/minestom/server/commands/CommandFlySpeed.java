@@ -22,6 +22,7 @@ public class CommandFlySpeed extends Command {
         ArgumentNumber<Float> flySpeed = ArgumentType.Float("flySpeed");
 
         addSyntax(this::showSelf);
+        addSyntax(this::showOther, Arguments.TARGET);
         addSyntax(this::executeSelf, flySpeed);
         addSyntax(this::executeOther, Arguments.TARGET, flySpeed);
     }
