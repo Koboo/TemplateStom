@@ -127,7 +127,6 @@ public class Server {
         minecraftServer.start(host, port);
         Logger.info("Listening on " + host + ":" + port);
 
-        Logger.info("Starting console..");
         console.start();
     }
 
