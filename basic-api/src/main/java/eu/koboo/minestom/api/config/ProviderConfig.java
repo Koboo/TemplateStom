@@ -28,7 +28,6 @@ public class ProviderConfig {
   }
 
   private static final String SEPARATOR = ": ";
-  private static final String LIST_SPLITTER = "  - ";
 
   private final String filePath;
 
@@ -186,7 +185,7 @@ public class ProviderConfig {
   }
 
   public <T> boolean contains(Value<T> value) {
-    String finalKey = value.getKey() + SEPARATOR;
+    String finalKey = value.getKey() + SEPARATOR.replaceFirst(" ", "");
     return readBuffer(filePath).parallelStream().anyMatch(line -> line.startsWith(finalKey));
   }
 
