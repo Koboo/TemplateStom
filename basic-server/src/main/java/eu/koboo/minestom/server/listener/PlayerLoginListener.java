@@ -4,7 +4,6 @@ import eu.koboo.minestom.server.ServerImpl;
 import java.util.function.Consumer;
 import lombok.AllArgsConstructor;
 import net.minestom.server.coordinate.Pos;
-import net.minestom.server.entity.Player;
 import net.minestom.server.event.player.PlayerLoginEvent;
 import net.minestom.server.instance.InstanceContainer;
 

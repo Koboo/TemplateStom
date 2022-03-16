@@ -2,7 +2,6 @@ package eu.koboo.minestom.config;
 
 import eu.koboo.minestom.api.config.ProviderConfig;
 import eu.koboo.minestom.api.config.ProviderConfig.Value;
-import net.minestom.server.extras.query.Query;
 
 public record QueryConfig(boolean enable,
                           int port) {

@@ -9,9 +9,7 @@ import net.minestom.server.command.builder.condition.Conditions;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.instance.Instance;
-import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.block.Block;
-import net.minestom.server.network.packet.client.ClientPacketsHandler.Play;
 import org.jetbrains.annotations.NotNull;
 
 public class CommandSurface extends Command {
