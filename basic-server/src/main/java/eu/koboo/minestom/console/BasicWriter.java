@@ -1,6 +1,6 @@
 package eu.koboo.minestom.console;
 
-import eu.koboo.minestom.server.Server;
+import eu.koboo.minestom.server.ServerImpl;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -62,10 +62,10 @@ public class BasicWriter implements Writer {
 
     @Override
     public void close() {
-        if(Server.getInstance().getConsole() == null) {
+        if(ServerImpl.getInstance().getConsole() == null) {
             return;
         }
-        Server.getInstance().getConsole().stop();
+        ServerImpl.getInstance().getConsole().stop();
     }
 
 }

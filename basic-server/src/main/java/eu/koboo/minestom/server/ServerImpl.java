@@ -1,6 +1,8 @@
 package eu.koboo.minestom.server;
 
+import eu.koboo.minestom.api.Server;
 import eu.koboo.minestom.config.CommandConfig;
+import eu.koboo.minestom.config.OperatorConfig;
 import eu.koboo.minestom.config.ProxyConfig;
 import eu.koboo.minestom.config.QueryConfig;
 import eu.koboo.minestom.config.ServerConfig;
@@ -20,6 +22,7 @@ import lombok.Getter;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.coordinate.Pos;
+import net.minestom.server.entity.Player;
 import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.player.PlayerLoginEvent;
 import net.minestom.server.extras.MojangAuth;
@@ -31,15 +34,17 @@ import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.InstanceManager;
 import org.tinylog.Logger;
 
-public class Server {
+public class ServerImpl extends Server {
 
     @Getter
-    private static Server instance;
+    private static ServerImpl instance;
 
     @Getter
     private final Console console;
 
-    public Server() {
+    private final OperatorConfig operatorConfig;
+
+    public ServerImpl() {
         instance = this;
 
         Logger.info("Loading Server settings..");
@@ -51,8 +56,11 @@ public class Server {
         Logger.info("Loading Query settings..");
         QueryConfig queryConfig = QueryConfig.load();
 
-        Logger.info("Loading Command settings..");
+        Logger.info("Loading Command file..");
         CommandConfig commandConfig = CommandConfig.load();
+
+        Logger.info("Loading Operator file..");
+        operatorConfig = OperatorConfig.load();
 
         Logger.info("Initializing console..");
         console = new Console();
@@ -61,7 +69,8 @@ public class Server {
         MinecraftServer minecraftServer = MinecraftServer.init();
         MinecraftServer.setTerminalEnabled(false);
 
-        MinecraftServer.getExceptionManager().setExceptionHandler(exc -> Logger.error("An unexpected error occurred! ", exc));
+        MinecraftServer.getExceptionManager()
+                .setExceptionHandler(exc -> Logger.error("An unexpected error occurred! ", exc));
 
         Logger.info("Registering Commands..");
         checkRegisterCommand(commandConfig, new CommandFly());
@@ -88,9 +97,9 @@ public class Server {
         String host = serverConfig.host();
         int port = serverConfig.port();
 
-        if(queryConfig.enable()) {
+        if (queryConfig.enable()) {
             int queryPort = queryConfig.port();
-            if(queryPort == port) {
+            if (queryPort == port) {
                 Logger.error("Server and Query port are equal (" + port + "=" + queryPort + ")! Abort!");
                 System.exit(0);
                 return;
@@ -99,14 +108,14 @@ public class Server {
             Logger.info("Started query @ 0.0.0.0:" + queryPort);
         }
 
-        if(serverConfig.optifineSupport()) {
+        if (serverConfig.optifineSupport()) {
             OptifineSupport.enable();
             Logger.info("Enabled OptifineSupport!");
         }
 
         switch (proxyConfig.proxyMode()) {
             case NONE -> {
-                if(serverConfig.onlineMode()) {
+                if (serverConfig.onlineMode()) {
                     MojangAuth.init();
                     Logger.info("ProxyMode 'NONE', enabled MojangAuth.");
                 } else {
@@ -114,7 +123,7 @@ public class Server {
                 }
             }
             case VELOCITY -> {
-                if(proxyConfig.proxySecret() == null || proxyConfig.proxySecret().equalsIgnoreCase("")) {
+                if (proxyConfig.proxySecret() == null || proxyConfig.proxySecret().equalsIgnoreCase("")) {
                     Logger.warn("ProxyMode 'VELOCITY' selected, but no proxy-secret set! Abort!");
                     System.exit(0);
                     break;
@@ -135,13 +144,29 @@ public class Server {
         console.start();
     }
 
+    @Override
+    public boolean isOperator(Player player) {
+        return operatorConfig.getOperatorIdList().contains(player.getUuid());
+    }
+
+    @Override
+    public void setOperator(Player player, boolean value) {
+        if (value && !isOperator(player)) {
+            operatorConfig.getOperatorIdList().add(player.getUuid());
+            OperatorConfig.write(operatorConfig.getOperatorIdList());
+        } else if (!value && isOperator(player)) {
+            operatorConfig.getOperatorIdList().remove(player.getUuid());
+            OperatorConfig.write(operatorConfig.getOperatorIdList());
+        }
+    }
+
     private void checkRegisterCommand(CommandConfig commandConfig, Command command) {
         String name = command.getName();
-        if(name.equalsIgnoreCase("stop")) {
+        if (name.equalsIgnoreCase("stop")) {
             MinecraftServer.getCommandManager().register(command);
             return;
         }
-        if(!commandConfig.getCommandNames().contains(name.toLowerCase(Locale.ROOT))) {
+        if (!commandConfig.getCommandNames().contains(name.toLowerCase(Locale.ROOT))) {
             Logger.warn("Disabling command '" + name + "'");
             return;
         }
