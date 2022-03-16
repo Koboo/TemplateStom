@@ -1,4 +1,4 @@
-package eu.koboo.minestom.terminal;
+package eu.koboo.minestom.console;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -97,4 +97,9 @@ public class Console {
     public void start() {
         consoleThread.start();
     }
+
+    public void stop() {
+        consoleThread.interrupt();
+    }
+
 }
