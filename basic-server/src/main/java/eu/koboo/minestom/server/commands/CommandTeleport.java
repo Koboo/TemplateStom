@@ -2,7 +2,6 @@ package eu.koboo.minestom.server.commands;
 
 import eu.koboo.minestom.server.utilities.Permissions;
 import net.minestom.server.command.CommandSender;
-import net.minestom.server.command.ConsoleSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.CommandContext;
 import net.minestom.server.command.builder.arguments.ArgumentType;

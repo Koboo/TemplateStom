@@ -1,6 +1,7 @@
 package eu.koboo.minestom.server;
 
 import eu.koboo.minestom.config.ServerConfig;
+import eu.koboo.minestom.console.Console;
 import eu.koboo.minestom.server.chunk.FlatGenerator;
 import eu.koboo.minestom.server.commands.CommandFly;
 import eu.koboo.minestom.server.commands.CommandGameMode;
@@ -9,7 +10,6 @@ import eu.koboo.minestom.server.commands.CommandSpawn;
 import eu.koboo.minestom.server.commands.CommandStop;
 import eu.koboo.minestom.server.commands.CommandTeleport;
 import eu.koboo.minestom.server.commands.CommandTeleportHere;
-import eu.koboo.minestom.console.Console;
 import lombok.Getter;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
