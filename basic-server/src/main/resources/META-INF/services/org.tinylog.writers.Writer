@@ -1,1 +1,2 @@
 eu.koboo.minestom.console.BasicWriter
+org.tinylog.writers.RollingFileWriter
