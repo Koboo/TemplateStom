@@ -8,9 +8,11 @@ import eu.koboo.minestom.config.QueryConfig;
 import eu.koboo.minestom.config.ServerConfig;
 import eu.koboo.minestom.console.Console;
 import eu.koboo.minestom.server.chunk.FlatGenerator;
+import eu.koboo.minestom.server.commands.CommandDeop;
 import eu.koboo.minestom.server.commands.CommandFly;
 import eu.koboo.minestom.server.commands.CommandFlySpeed;
 import eu.koboo.minestom.server.commands.CommandGameMode;
+import eu.koboo.minestom.server.commands.CommandOp;
 import eu.koboo.minestom.server.commands.CommandSpawn;
 import eu.koboo.minestom.server.commands.CommandSpectate;
 import eu.koboo.minestom.server.commands.CommandStop;
@@ -73,6 +75,8 @@ public class ServerImpl extends Server {
                 .setExceptionHandler(exc -> Logger.error("An unexpected error occurred! ", exc));
 
         Logger.info("Registering Commands..");
+        checkRegisterCommand(commandConfig, new CommandDeop());
+        checkRegisterCommand(commandConfig, new CommandOp());
         checkRegisterCommand(commandConfig, new CommandFly());
         checkRegisterCommand(commandConfig, new CommandFlySpeed());
         checkRegisterCommand(commandConfig, new CommandGameMode());

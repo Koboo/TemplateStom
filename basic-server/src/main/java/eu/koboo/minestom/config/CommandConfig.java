@@ -41,6 +41,8 @@ public record CommandConfig(List<String> commandNames) {
                 writer.println("# If you want to disable one command");
                 writer.println("# just remove it from the list or comment out with '#'.");
 
+                content.add("deop");
+                content.add("op");
                 content.add("fly");
                 content.add("flyspeed");
                 content.add("gamemode");

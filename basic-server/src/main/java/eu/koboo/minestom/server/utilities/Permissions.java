@@ -24,6 +24,8 @@ public class Permissions {
 
     public static final String COMMAND_SURFACE = "permission.command.surface";
 
+    public static final String COMMAND_OPERATOR = "permission.command.operator";
+
 
     public static final String MESSAGE_NO_PERMISSION = "You don't have permissions to do that.";
 }
