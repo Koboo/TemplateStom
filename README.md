@@ -28,6 +28,8 @@ A big thanks to the authors, for open-sourcing their projects!
 ## Current Features
 
 * Commands:
+    * ``op`` - Set other players to operator
+    * ``deop`` - Remove other players as operator
     * ``gamemode`` - Change gamemode of yourself or other players
     * ``fly`` - Change fly-mode of yourself or other players
     * ``flyspeed`` - Change fly-speed of yourself or other players
