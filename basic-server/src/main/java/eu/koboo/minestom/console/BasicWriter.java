@@ -11,12 +11,12 @@ import org.tinylog.core.LogEntry;
 import org.tinylog.core.LogEntryValue;
 import org.tinylog.writers.Writer;
 
-public class ServerConsoleWriter implements Writer {
+public class BasicWriter implements Writer {
 
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
 
     @SuppressWarnings("unused")
-    public ServerConsoleWriter(Map<String, String> properties) { }
+    public BasicWriter(Map<String, String> properties) { }
 
     @Override
     public Collection<LogEntryValue> getRequiredLogEntryValues() {
@@ -35,13 +35,22 @@ public class ServerConsoleWriter implements Writer {
         String[] packagePath = logEntry.getClassName().split("\\.");
         String clazz = packagePath[packagePath.length - 1];
 
+        String message = ConvertColor.parseColor(logEntry.getMessage());
+
         Ansi ansi = Ansi.ansi();
 
         ansi = ansi.fgCyan().a("[" + time + "] ").reset();
         ansi = ansi.a("[" + logEntry.getThread().getName() + "] ").reset();
         ansi = ansi.fgYellow().a("[" + logEntry.getLevel().name() + "] ").reset();
         ansi = ansi.fgMagenta().a("[" + clazz + "] ").reset();
-        ansi = appendWithColor(ansi, logEntry.getLevel(), logEntry.getMessage());
+
+        switch (logEntry.getLevel()) {
+            case INFO, OFF -> ansi = ansi.a(message).reset();
+            case WARN -> ansi = ansi.fgBrightYellow().a(message).reset();
+            case ERROR -> ansi = ansi.fgRed().a(message).reset();
+            case DEBUG -> ansi = ansi.fgBrightCyan().a(message).reset();
+            case TRACE -> ansi = ansi.fgBrightBlue().a(message).reset();
+        }
 
         System.out.println(ansi);
     }
@@ -56,14 +65,4 @@ public class ServerConsoleWriter implements Writer {
         Server.getInstance().getConsole().stop();
     }
 
-    private Ansi appendWithColor(Ansi ansi, Level level, String message) {
-        switch (level) {
-            case INFO, OFF -> ansi = ansi.a(message).reset();
-            case WARN -> ansi = ansi.fgBrightYellow().a(message).reset();
-            case ERROR -> ansi = ansi.fgRed().a(message).reset();
-            case DEBUG -> ansi = ansi.fgBrightCyan().a(message).reset();
-            case TRACE -> ansi = ansi.fgBrightBlue().a(message).reset();
-        }
-        return ansi;
-    }
 }
