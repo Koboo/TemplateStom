@@ -1,11 +1,11 @@
 package eu.koboo.minestom.server;
 
+import eu.koboo.minestom.config.ProxyConfig;
 import eu.koboo.minestom.config.ServerConfig;
 import eu.koboo.minestom.console.Console;
 import eu.koboo.minestom.server.chunk.FlatGenerator;
 import eu.koboo.minestom.server.commands.CommandFly;
 import eu.koboo.minestom.server.commands.CommandGameMode;
-import eu.koboo.minestom.server.commands.CommandReloadConfig;
 import eu.koboo.minestom.server.commands.CommandSpawn;
 import eu.koboo.minestom.server.commands.CommandStop;
 import eu.koboo.minestom.server.commands.CommandTeleport;
@@ -17,6 +17,7 @@ import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.player.PlayerLoginEvent;
 import net.minestom.server.extras.MojangAuth;
 import net.minestom.server.extras.bungee.BungeeCordProxy;
+import net.minestom.server.extras.optifine.OptifineSupport;
 import net.minestom.server.extras.velocity.VelocityProxy;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.InstanceManager;
@@ -28,7 +29,9 @@ public class Server {
     private static Server instance;
 
     @Getter
-    private ServerConfig serverConfig;
+    private final ServerConfig serverConfig;
+    @Getter
+    private final ProxyConfig proxyConfig;
 
     @Getter
     private final Console console;
@@ -36,8 +39,11 @@ public class Server {
     public Server() {
         instance = this;
 
-        Logger.info("Loading config..");
+        Logger.info("Loading Server settings..");
         serverConfig = ServerConfig.load();
+
+        Logger.info("Loading Proxy settings..");
+        proxyConfig = ProxyConfig.load();
 
         Logger.info("Initializing console..");
         console = new Console();
@@ -58,7 +64,6 @@ public class Server {
         Logger.info("Registering Commands..");
         MinecraftServer.getCommandManager().register(new CommandFly());
         MinecraftServer.getCommandManager().register(new CommandGameMode());
-        MinecraftServer.getCommandManager().register(new CommandReloadConfig());
         MinecraftServer.getCommandManager().register(new CommandSpawn());
         MinecraftServer.getCommandManager().register(new CommandStop());
         MinecraftServer.getCommandManager().register(new CommandTeleport());
@@ -79,16 +84,23 @@ public class Server {
         int port = serverConfig.port();
         Logger.info("Starting @ " + host + ":" + port);
 
-        switch (serverConfig.proxyMode()) {
+        if(serverConfig.optifineSupport()) {
+            OptifineSupport.enable();
+            Logger.info("Enabled OptifineSupport!");
+        }
+
+        switch (proxyConfig.proxyMode()) {
             case NONE -> {
                 MojangAuth.init();
                 Logger.info("ProxyMode 'NONE', enabled MojangAuth.");
             }
             case VELOCITY -> {
-                if(serverConfig.proxySecret() == null || serverConfig.proxySecret().equalsIgnoreCase("")) {
-                    Logger.warn("ProxyMode 'VELOCITY' selected, but no proxy-secret set!");
+                if(proxyConfig.proxySecret() == null || proxyConfig.proxySecret().equalsIgnoreCase("")) {
+                    Logger.warn("ProxyMode 'VELOCITY' selected, but no proxy-secret set! Abort!");
+                    System.exit(0);
+                    break;
                 }
-                VelocityProxy.enable(serverConfig.proxySecret());
+                VelocityProxy.enable(proxyConfig.proxySecret());
                 Logger.info("ProxyMode 'VELOCITY', enabled VelocityProxy.");
             }
             case BUNGEECORD -> {
@@ -102,10 +114,6 @@ public class Server {
 
         Logger.info("Starting console..");
         console.start();
-    }
-
-    public void reloadConfig() {
-        this.serverConfig = ServerConfig.load();
     }
 
 }
