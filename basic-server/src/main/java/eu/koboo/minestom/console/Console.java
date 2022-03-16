@@ -7,6 +7,8 @@ import java.util.Objects;
 import java.util.Set;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.CommandResult;
+import net.minestom.server.command.builder.CommandResult.Type;
 import org.jline.reader.Candidate;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
@@ -66,7 +68,6 @@ public class Console {
 
         consoleThread = new Thread(() -> {
             try {
-                Logger.info("Console started! Waiting for input..");
                 String line;
                 while (!MinecraftServer.isStopping()) {
                     try {
@@ -76,8 +77,16 @@ public class Console {
                     }
                     String cmd = line.trim();
                     if (!cmd.isEmpty()) {
-                        MinecraftServer.getCommandManager()
+                        CommandResult result = MinecraftServer.getCommandManager()
                                 .execute(MinecraftServer.getCommandManager().getConsoleSender(), cmd);
+                        if(result.getType() != Type.SUCCESS || result.getType() != Type.INVALID_SYNTAX) {
+                            if(result.getType() == Type.CANCELLED) {
+                                Logger.info("The command '" + cmd + "' got cancelled.");
+                            }
+                            if(result.getType() == Type.UNKNOWN) {
+                                Logger.info("The command '" + cmd+ "' is unknown.");
+                            }
+                        }
                     }
                 }
             } catch (UserInterruptException e) {
