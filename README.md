@@ -1,18 +1,14 @@
-# BasicMinestomServer
+# MinestomImpl
 
+Fork of [BasicMinestomServer](https://github.com/Protonull/BasicMinestomServer).
 
-## Features
+This is a fork of [Protonull's BasicMinestomServer](https://github.com/Protonull/BasicMinestomServer).
+Further developed and managed by [Koboo](https://github.com/Koboo). This is to
+implement some functions of [Minestom](https://minestom.com) and make
+them configurable. Also some of the better known commands will be implemented
+directly.
 
-* Commands:
-  * ``stop``
-  * ``gamemode``
-  * ``fly``
-  * ``flyspeed``
-  * ``spawn``
-  * ``teleport``
-  * ``teleporthere``
-* Async Log Files
-* Colors in Console (ColorCode support)
+In the distant future an additional API may be added.
 
 ## Requirements
 
@@ -23,15 +19,30 @@ These things are required for use:
 
 ## Credits
 
+A big thanks to the authors, for open-sourcing their projects!
+
 * Project [BasicMinestomServer](https://github.com/Protonull/BasicMinestomServer)
 * Console [Sabre](https://github.com/Project-Cepi/Sabre)
 * Commands [VanillaFeatures](https://github.com/JustDoom/VanillaFeatures)
 
-## TODO:
+## Current Features
 
-* World Data (Save/Load - with Slime)
-* Operator feature
-* Extension managament through command?
+* Commands:
+    * ``stop`` - Stops the server
+    * ``gamemode`` - Change gamemode of yourself or other players
+    * ``fly`` - Change fly-mode of yourself or other players
+    * ``flyspeed`` - Change fly-speed of yourself or other players
+    * ``spawn`` - Teleport yourself or others players to spawn
+    * ``teleport`` - Teleport to other players or player to player
+    * ``teleporthere`` - Teleport other players to you
+* Async Log Files
+* Colors in Console (ColorCode support)
+
+## ToDo
+
+* World Data (Save/Load - with Slime or Anvil)
+* Operator feature (``/operator``)
+* Extension Management through command?
 * Permissions?
 * More commands
 * More chunk generators
