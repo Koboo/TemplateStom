@@ -22,3 +22,12 @@ allprojects {
     }
 
 }
+
+task cleanProject(type: Delete) {
+    delete file('logs/')
+    delete file('extensions/')
+    delete file('configs/')
+    delete rootProject.buildDir
+    delete project(':basic-api').buildDir
+    delete project(':basic-server').buildDir
+}
