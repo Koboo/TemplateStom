@@ -6,8 +6,8 @@ plugins {
 mainClassName = 'eu.koboo.minestom.Launch'
 
 dependencies {
-    implementation 'com.github.Minestom:Minestom:db2d00819c'
-    implementation 'org.jetbrains:annotations:23.0.0'
+    compileOnly 'com.github.Minestom:Minestom:db2d00819c'
+    compileOnly 'org.jetbrains:annotations:23.0.0'
 
     implementation 'org.tinylog:slf4j-tinylog:2.4.1'
     implementation 'org.tinylog:tinylog-impl:2.4.1'
