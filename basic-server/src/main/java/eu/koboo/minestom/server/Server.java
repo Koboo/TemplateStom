@@ -1,5 +1,6 @@
 package eu.koboo.minestom.server;
 
+import eu.koboo.minestom.config.CommandConfig;
 import eu.koboo.minestom.config.ProxyConfig;
 import eu.koboo.minestom.config.QueryConfig;
 import eu.koboo.minestom.config.ServerConfig;
@@ -13,8 +14,10 @@ import eu.koboo.minestom.server.commands.CommandSpectate;
 import eu.koboo.minestom.server.commands.CommandStop;
 import eu.koboo.minestom.server.commands.CommandTeleport;
 import eu.koboo.minestom.server.commands.CommandTeleportHere;
+import java.util.Locale;
 import lombok.Getter;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.command.builder.Command;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.player.PlayerLoginEvent;
@@ -39,6 +42,8 @@ public class Server {
     @Getter
     private final QueryConfig queryConfig;
 
+    private final CommandConfig commandConfig;
+
     @Getter
     private final Console console;
 
@@ -54,6 +59,9 @@ public class Server {
         Logger.info("Loading Query settings..");
         queryConfig = QueryConfig.load();
 
+        Logger.info("Loading Command settings..");
+        commandConfig = CommandConfig.load();
+
         Logger.info("Initializing console..");
         console = new Console();
 
@@ -68,14 +76,14 @@ public class Server {
         MinecraftServer.getExceptionManager().setExceptionHandler(exc -> Logger.error("An unexpected error occurred! ", exc));
 
         Logger.info("Registering Commands..");
-        MinecraftServer.getCommandManager().register(new CommandFly());
-        MinecraftServer.getCommandManager().register(new CommandFlySpeed());
-        MinecraftServer.getCommandManager().register(new CommandGameMode());
-        MinecraftServer.getCommandManager().register(new CommandSpawn());
-        MinecraftServer.getCommandManager().register(new CommandSpectate());
-        MinecraftServer.getCommandManager().register(new CommandStop());
-        MinecraftServer.getCommandManager().register(new CommandTeleport());
-        MinecraftServer.getCommandManager().register(new CommandTeleportHere());
+        checkRegisterCommand(new CommandFly());
+        checkRegisterCommand(new CommandFlySpeed());
+        checkRegisterCommand(new CommandGameMode());
+        checkRegisterCommand(new CommandSpawn());
+        checkRegisterCommand(new CommandSpectate());
+        checkRegisterCommand(new CommandStop());
+        checkRegisterCommand(new CommandTeleport());
+        checkRegisterCommand(new CommandTeleportHere());
 
         Logger.info("Setting up Instances..");
         InstanceManager instanceManager = MinecraftServer.getInstanceManager();
@@ -132,6 +140,19 @@ public class Server {
         Logger.info("Listening on " + host + ":" + port);
 
         console.start();
+    }
+
+    private void checkRegisterCommand(Command command) {
+        String name = command.getName();
+        if(name.equalsIgnoreCase("stop")) {
+            MinecraftServer.getCommandManager().register(command);
+            return;
+        }
+        if(!commandConfig.getCommandNames().contains(name.toLowerCase(Locale.ROOT))) {
+            Logger.warn("Disabling command '" + name + "'");
+            return;
+        }
+        MinecraftServer.getCommandManager().register(command);
     }
 
 }
