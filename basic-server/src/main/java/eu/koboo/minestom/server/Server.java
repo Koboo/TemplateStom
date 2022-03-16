@@ -117,8 +117,12 @@ public class Server {
 
         switch (proxyConfig.proxyMode()) {
             case NONE -> {
-                MojangAuth.init();
-                Logger.info("ProxyMode 'NONE', enabled MojangAuth.");
+                if(serverConfig.onlineMode()) {
+                    MojangAuth.init();
+                    Logger.info("ProxyMode 'NONE', enabled MojangAuth.");
+                } else {
+                    Logger.info("ProxyMode 'NONE', without MojangAuth.");
+                }
             }
             case VELOCITY -> {
                 if(proxyConfig.proxySecret() == null || proxyConfig.proxySecret().equalsIgnoreCase("")) {
