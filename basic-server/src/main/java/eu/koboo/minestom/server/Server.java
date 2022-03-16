@@ -6,6 +6,7 @@ import eu.koboo.minestom.config.ServerConfig;
 import eu.koboo.minestom.console.Console;
 import eu.koboo.minestom.server.chunk.FlatGenerator;
 import eu.koboo.minestom.server.commands.CommandFly;
+import eu.koboo.minestom.server.commands.CommandFlySpeed;
 import eu.koboo.minestom.server.commands.CommandGameMode;
 import eu.koboo.minestom.server.commands.CommandSpawn;
 import eu.koboo.minestom.server.commands.CommandStop;
@@ -67,6 +68,7 @@ public class Server {
 
         Logger.info("Registering Commands..");
         MinecraftServer.getCommandManager().register(new CommandFly());
+        MinecraftServer.getCommandManager().register(new CommandFlySpeed());
         MinecraftServer.getCommandManager().register(new CommandGameMode());
         MinecraftServer.getCommandManager().register(new CommandSpawn());
         MinecraftServer.getCommandManager().register(new CommandStop());
