@@ -12,6 +12,7 @@ import eu.koboo.minestom.server.commands.CommandGameMode;
 import eu.koboo.minestom.server.commands.CommandSpawn;
 import eu.koboo.minestom.server.commands.CommandSpectate;
 import eu.koboo.minestom.server.commands.CommandStop;
+import eu.koboo.minestom.server.commands.CommandSurface;
 import eu.koboo.minestom.server.commands.CommandTeleport;
 import eu.koboo.minestom.server.commands.CommandTeleportHere;
 import java.util.Locale;
@@ -36,38 +37,25 @@ public class Server {
     private static Server instance;
 
     @Getter
-    private final ServerConfig serverConfig;
-    @Getter
-    private final ProxyConfig proxyConfig;
-    @Getter
-    private final QueryConfig queryConfig;
-
-    private final CommandConfig commandConfig;
-
-    @Getter
     private final Console console;
 
     public Server() {
         instance = this;
 
         Logger.info("Loading Server settings..");
-        serverConfig = ServerConfig.load();
+        ServerConfig serverConfig = ServerConfig.load();
 
         Logger.info("Loading Proxy settings..");
-        proxyConfig = ProxyConfig.load();
+        ProxyConfig proxyConfig = ProxyConfig.load();
 
         Logger.info("Loading Query settings..");
-        queryConfig = QueryConfig.load();
+        QueryConfig queryConfig = QueryConfig.load();
 
         Logger.info("Loading Command settings..");
-        commandConfig = CommandConfig.load();
+        CommandConfig commandConfig = CommandConfig.load();
 
         Logger.info("Initializing console..");
         console = new Console();
-
-        // TODO: Config values
-        // open-to-lan
-        //   otl-config
 
         Logger.info("Initializing server..");
         MinecraftServer minecraftServer = MinecraftServer.init();
@@ -76,14 +64,15 @@ public class Server {
         MinecraftServer.getExceptionManager().setExceptionHandler(exc -> Logger.error("An unexpected error occurred! ", exc));
 
         Logger.info("Registering Commands..");
-        checkRegisterCommand(new CommandFly());
-        checkRegisterCommand(new CommandFlySpeed());
-        checkRegisterCommand(new CommandGameMode());
-        checkRegisterCommand(new CommandSpawn());
-        checkRegisterCommand(new CommandSpectate());
-        checkRegisterCommand(new CommandStop());
-        checkRegisterCommand(new CommandTeleport());
-        checkRegisterCommand(new CommandTeleportHere());
+        checkRegisterCommand(commandConfig, new CommandFly());
+        checkRegisterCommand(commandConfig, new CommandFlySpeed());
+        checkRegisterCommand(commandConfig, new CommandGameMode());
+        checkRegisterCommand(commandConfig, new CommandSpawn());
+        checkRegisterCommand(commandConfig, new CommandSpectate());
+        checkRegisterCommand(commandConfig, new CommandStop());
+        checkRegisterCommand(commandConfig, new CommandSurface());
+        checkRegisterCommand(commandConfig, new CommandTeleport());
+        checkRegisterCommand(commandConfig, new CommandTeleportHere());
 
         Logger.info("Setting up Instances..");
         InstanceManager instanceManager = MinecraftServer.getInstanceManager();
@@ -146,7 +135,7 @@ public class Server {
         console.start();
     }
 
-    private void checkRegisterCommand(Command command) {
+    private void checkRegisterCommand(CommandConfig commandConfig, Command command) {
         String name = command.getName();
         if(name.equalsIgnoreCase("stop")) {
             MinecraftServer.getCommandManager().register(command);

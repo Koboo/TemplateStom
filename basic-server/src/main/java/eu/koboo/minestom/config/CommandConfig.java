@@ -18,6 +18,7 @@ public class CommandConfig {
 
     private final List<String> commandNames;
 
+    @SuppressWarnings("all")
     public static CommandConfig load() {
         String filePath = "configs/commands.yml";
         List<String> content = new ArrayList<>();
@@ -37,6 +38,9 @@ public class CommandConfig {
             } else {
                 file.createNewFile();
                 PrintWriter writer = new PrintWriter(filePath, StandardCharsets.UTF_8);
+                writer.println("#These are the command provided by default.");
+                writer.println("#If you want to disable them, just remove them.");
+
                 content.add("fly");
                 content.add("flyspeed");
                 content.add("gamemode");
@@ -45,8 +49,8 @@ public class CommandConfig {
                 content.add("stop");
                 content.add("teleport");
                 content.add("teleporthere");
-                writer.println("#These are the command provided by default.");
-                writer.println("#If you want to disable them, just remove them.");
+                content.add("surface");
+
                 for (String cmd : content) {
                     writer.println(cmd);
                 }
