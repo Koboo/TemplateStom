@@ -15,6 +15,7 @@ public class ServerConsoleWriter implements Writer {
 
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
 
+    @SuppressWarnings("unused")
     public ServerConsoleWriter(Map<String, String> properties) { }
 
     @Override
@@ -26,7 +27,7 @@ public class ServerConsoleWriter implements Writer {
     }
 
     @Override
-    public void write(LogEntry logEntry) throws Exception {
+    public void write(LogEntry logEntry) {
         if (logEntry.getLevel().ordinal() < Level.INFO.ordinal()) {
             return;
         }
@@ -46,12 +47,12 @@ public class ServerConsoleWriter implements Writer {
     }
 
     @Override
-    public void flush() throws Exception {
+    public void flush() {
         System.out.flush();
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         Server.getInstance().getConsole().stop();
     }
 
