@@ -38,8 +38,9 @@ public class CommandConfig {
             } else {
                 file.createNewFile();
                 PrintWriter writer = new PrintWriter(filePath, StandardCharsets.UTF_8);
-                writer.println("#These are the command provided by default.");
-                writer.println("#If you want to disable them, just remove them.");
+                writer.println("# These are all commands provided by the server.");
+                writer.println("# If you want to disable one command");
+                writer.println("# just remove it from the list or comment out with '#'.");
 
                 content.add("fly");
                 content.add("flyspeed");
