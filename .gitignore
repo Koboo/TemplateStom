@@ -4,6 +4,7 @@ instances/
 extensions/
 .minestom_tmp
 logs/
+configs/
 server.yml
 
 # Ignored
