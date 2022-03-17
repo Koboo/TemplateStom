@@ -4,12 +4,11 @@ instances/
 extensions/
 .minestom_tmp
 logs/
-configs/
-server.yml
+server_settings.yml
 
 # Ignored
-basic-server/build/
-basic-api/build/
+template-server/build/
+template-api/build/
 .idea
 .gradle
 
@@ -380,5 +379,3 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
-
-# End of https://www.toptal.com/developers/gitignore/api/vim,java,linux,macos,emacs,windows,eclipse,notepadpp,intellij+all,visualstudiocode,maven

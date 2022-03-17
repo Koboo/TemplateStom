@@ -1,3 +1,3 @@
-rootProject.name = 'basicstom'
-include(':basic-server')
-include(':basic-api')
+rootProject.name = 'template-stom'
+include(':template-server')
+include(':template-api')

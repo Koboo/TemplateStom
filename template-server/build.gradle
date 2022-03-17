@@ -1,0 +1,35 @@
+plugins {
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+compileJava {
+    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_17
+}
+
+mainClassName = 'eu.koboo.minestom.Launch'
+
+dependencies {
+    compileOnly "com.github.Minestom:Minestom:${minestomVersion}"
+    compileOnly "org.jetbrains:annotations:${annotationsVersion}"
+
+    implementation 'org.tinylog:slf4j-tinylog:2.4.1'
+    implementation 'org.tinylog:tinylog-impl:2.4.1'
+    implementation 'org.fusesource.jansi:jansi:2.4.0'
+    implementation 'org.jline:jline:3.21.0'
+
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    implementation project(":template-api")
+}
+
+shadowJar {
+    manifest {
+        attributes(
+                'Main-Class': mainClassName,
+                'Implementation-Version': project.version
+        )
+    }
+}

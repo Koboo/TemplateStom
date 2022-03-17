@@ -1,23 +1,18 @@
 allprojects {
 
-    group 'eu.koboo'
-    version '1.0'
+    group "${authorGroup}"
+    version "${authorVersion}"
 
     repositories {
         mavenCentral()
         maven {
+            // Minestom
             url 'https://jitpack.io'
         }
 
         maven {
+            // Dependencies
             url 'https://repo.spongepowered.org/maven'
-        }
-
-        maven {
-            url 'https://oss.sonatype.org/content/repositories/snapshots/'
-        }
-        maven {
-            url 'https://repo.koboo.eu/releases'
         }
     }
 
@@ -28,6 +23,6 @@ task cleanProject(type: Delete) {
     delete file('extensions/')
     delete file('configs/')
     delete rootProject.buildDir
-    delete project(':basic-api').buildDir
-    delete project(':basic-server').buildDir
+    delete project(':template-api').buildDir
+    delete project(':template-server').buildDir
 }

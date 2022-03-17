@@ -1,0 +1,16 @@
+plugins {
+    id 'java'
+}
+
+compileJava {
+    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_17
+}
+
+dependencies {
+    implementation "com.github.Minestom:Minestom:${minestomVersion}"
+    implementation "org.jetbrains:annotations:${annotationsVersion}"
+
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+}

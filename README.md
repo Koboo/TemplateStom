@@ -1,54 +1,28 @@
-# MinestomImpl
+# Minestom Server Template
 
-Fork of [BasicMinestomServer](https://github.com/Protonull/BasicMinestomServer).
+A very simple implementation of Minestom, which can be used as a template to develop your own
+server. The project structure allows to create a separate API at the same time, which can be
+released apart from the actual server.
 
-This is a fork of [Protonull's BasicMinestomServer](https://github.com/Protonull/BasicMinestomServer).
-Further, developed and managed by [Koboo](https://github.com/Koboo). This is to
-implement some functions of [Minestom](https://minestom.com) and make
-them configurable. Also, some better known commands will be implemented
-directly.
+## Specification
 
-In the distant future an additional API may be added.
-
-## Requirements
-
-These things are required for use:
-
-* Java 17
-* Minecraft 1.18.2
+* JDK: ``Java 17``
+* Minecraft-Version: ``1.18.2``
+* Gradle: ``7.2``
 
 ## Credits
 
-A big thanks to the authors, for open-sourcing their projects!
+A big thanks to [Project Cepi](https://github.com/Project-Cepi), for
+open-sourcing [Sabre](https://github.com/Project-Cepi/Sabre)!
 
-* Project [BasicMinestomServer](https://github.com/Protonull/BasicMinestomServer)
-* Console [Sabre](https://github.com/Project-Cepi/Sabre)
-* Commands [VanillaFeatures](https://github.com/JustDoom/VanillaFeatures)
+## Features
 
-## Current Features
+* ``stop``-Command to stop the server (Permission: ``command.stop``)
+* Asynchronous writing of Log files
+* ColorCode support in the Console
+* Proxy support with Configuration (BungeeCord, Waterfall, Velocity)
+* Project structure to support API building
 
-* Commands:
-    * ``op`` - Set other players to operator
-    * ``deop`` - Remove other players as operator
-    * ``gamemode`` - Change gamemode of yourself or other players
-    * ``fly`` - Change fly-mode of yourself or other players
-    * ``flyspeed`` - Change fly-speed of yourself or other players
-    * ``spawn`` - Teleport yourself or others players to spawn
-    * ``spectate`` - Spectate other players
-    * ``stop`` - Stops the server
-    * ``surface`` - Teleport yourself or other players to surface
-    * ``teleport`` - Teleport to other players or player to player
-    * ``teleporthere`` - Teleport other players to you
-* Async Log File writing
-* Colors in Console (ColorCode support)
-* Operators (Only with permission level 4)
+## Contributions
 
-## ToDo
-
-* World Data (Save/Load - with Slime or Anvil)
-* Extension Management through command?
-* Permissions?
-* More commands
-* More chunk generators
-    * [MinestomVanillaGen](https://github.com/Flamgop/MinestomVanillaGen)
-    * [TerraGenerationExtension](https://github.com/KrystilizeNevaDies/TerraGenerationExtension)
+If you want to contribute, pull requests are always welcome!
