@@ -1,4 +1,4 @@
-package eu.koboo.minestom.api;
+package eu.koboo.minestom.api.server;
 
 import eu.koboo.minestom.api.config.ServerConfig;
 import lombok.Getter;

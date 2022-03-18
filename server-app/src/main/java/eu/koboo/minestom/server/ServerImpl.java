@@ -1,6 +1,6 @@
 package eu.koboo.minestom.server;
 
-import eu.koboo.minestom.api.Server;
+import eu.koboo.minestom.api.server.Server;
 import eu.koboo.minestom.api.config.ServerConfig;
 import eu.koboo.minestom.commands.CommandStop;
 import eu.koboo.minestom.config.ConfigLoader;
@@ -30,10 +30,10 @@ public class ServerImpl extends Server {
     @Getter
     private static ServerImpl instance;
 
+    private final ServerConfig serverConfig;
+
     @Getter
     private final Console console;
-
-    private final ServerConfig serverConfig;
 
     public ServerImpl() {
         long startTime = System.nanoTime();
@@ -83,7 +83,6 @@ public class ServerImpl extends Server {
             event.getPlayer().setRespawnPoint(new Pos(0, 44, 0));
             event.getPlayer().setGameMode(serverConfig.gameMode());
         });
-
 
         String host = serverConfig.host();
         int port = serverConfig.port();
