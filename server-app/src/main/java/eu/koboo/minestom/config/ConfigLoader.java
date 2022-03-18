@@ -26,7 +26,6 @@ public class ConfigLoader {
       defaultValue(cfg, "server.port", 25565, "The listening port of the server");
       defaultValue(cfg, "server.online-mode", true, "Toggle online-mode (mojang authentication) of the server");
       defaultValue(cfg, "server.difficulty", Difficulty.NORMAL.name(), "Toggle difficulty (options: PEACEFUL, EASY, NORMAL, HARD)");
-      defaultValue(cfg, "server.gamemode", GameMode.SURVIVAL.name(), "Toggle gamemode (options: CREATIVE, SURVIVAL, ADVENTURE, SPECTATOR)");
 
       defaultValue(cfg, "proxy.proxy-mode", ProxyMode.NONE.name(), "Toggle proxy-mode (options: NONE, BUNGEECORD, VELOCITY)");
       defaultValue(cfg, "proxy.velocity-secret", "", "Set your velocity-secret (Do not share that!)");
@@ -45,7 +44,6 @@ public class ConfigLoader {
       boolean onlineMode = cfg.getBoolean("server.online-mode");
       Difficulty difficulty = Difficulty.valueOf(cfg.getString("server.difficulty").toUpperCase(
           Locale.ROOT));
-      GameMode gameMode = GameMode.valueOf(cfg.getString("server.gamemode").toUpperCase(Locale.ROOT));
 
       ProxyMode proxyMode = ProxyMode.valueOf(cfg.getString("proxy.proxy-mode").toUpperCase(Locale.ROOT));
       String velocitySecret = cfg.getString("proxy.velocity-secret");
@@ -58,7 +56,7 @@ public class ConfigLoader {
       int viewDistanceEntities = cfg.getInt("view-distance.entities");
 
       return new ServerConfig(
-          host, port, onlineMode, difficulty, gameMode,
+          host, port, onlineMode, difficulty,
           proxyMode, velocitySecret,
           rateLimit, maxPacketSize, compressionThreshold,
           viewDistanceChunks, viewDistanceEntities

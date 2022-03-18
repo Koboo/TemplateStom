@@ -83,7 +83,6 @@ public class ServerImpl extends Server {
         eventHandler.addListener(PlayerLoginEvent.class, event -> {
             event.setSpawningInstance(instanceContainer);
             event.getPlayer().setRespawnPoint(new Pos(0, 44, 0));
-            event.getPlayer().setGameMode(serverConfig.gameMode());
         });
 
         String host = serverConfig.host();

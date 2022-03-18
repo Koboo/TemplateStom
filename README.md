@@ -64,8 +64,6 @@ server:
   online-mode: true
   # Toggle difficulty (options: PEACEFUL, EASY, NORMAL, HARD)
   difficulty: NORMAL
-  # Toggle gamemode (options: CREATIVE, SURVIVAL, ADVENTURE, SPECTATOR)
-  gamemode: SURVIVAL
 proxy:
   # Toggle proxy-mode (options: NONE, BUNGEECORD, VELOCITY)
   proxy-mode: NONE
@@ -83,7 +81,6 @@ view-distance:
   chunks: 10
   # Set the view-distance of entities (range between 2 and 32)
   entities: 10
-
 ````
 
 **Note: The configuration cannot be reloaded after the start. A restart must be performed for changes
