@@ -1,6 +1,9 @@
+import java.text.SimpleDateFormat
+
 plugins {
     id 'application'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'net.kyori.blossom' version '1.2.0'
 }
 
 compileJava {
@@ -13,6 +16,7 @@ mainClassName = 'eu.koboo.minestom.Launch'
 dependencies {
     compileOnly "com.github.Minestom:Minestom:${minestomVersion}"
     compileOnly "org.jetbrains:annotations:${annotationsVersion}"
+    compileOnly "me.carleslc.Simple-YAML:Simple-Yaml:${yamlVersion}"
 
     implementation 'org.tinylog:slf4j-tinylog:2.4.1'
     implementation 'org.tinylog:tinylog-impl:2.4.1'
@@ -29,7 +33,17 @@ shadowJar {
     manifest {
         attributes(
                 'Main-Class': mainClassName,
-                'Implementation-Version': project.version
+                'Implementation-Title': rootProject.name,
+                'Implementation-Version': rootProject.version,
+                'Build-Timestamp': new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
+                'Created-By': "Gradle ${gradle.gradleVersion}",
+                'Build-Jdk': "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
+                'Build-OS': "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}"
         )
     }
+}
+
+blossom {
+    replaceToken 'PROJECT_NAME', rootProject.name
+    replaceToken 'PROJECT_VERSION', rootProject.version
 }
