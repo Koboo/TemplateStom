@@ -1,13 +1,13 @@
 # Minestom Server Template
 
-A very simple implementation of [Minestom](https://minestom.net), which can be used as a template to develop your own
-server. The project structure allows to create a separate API at the same time, which can be
+A very simple implementation of [Minestom](https://minestom.net), which can be used as a template to
+develop your own server. The project structure allows you to create a separate API, which can be
 released apart from the actual server.
 
 ## Specification
 
-Apart from the fact that this project serves as a template, it can be run and used as a server. You
-can either [build from source](https://github.com/Koboo/TemplateStom/archive/refs/heads/main.zip) or
+This template can also be run as a server. You can
+either [build from source](https://github.com/Koboo/TemplateStom/archive/refs/heads/main.zip) or
 download the [latest release](https://github.com/Koboo/TemplateStom/releases/latest).
 
 * JDK: ``Java 17``
@@ -26,12 +26,12 @@ download the [latest release](https://github.com/Koboo/TemplateStom/releases/lat
 
 ## Publishing
 
-If the API should be published via ``maven-publish``, it's [build.gradle](server-api/build.gradle)
-must be modified accordingly.
+If the API should be published via ``maven-publish``, then you have to configure it
+in it's [build.gradle](server-api/build.gradle).
 
 ## File Linking
 
-Links to the most searched files
+Links to the most interesting files
 
 * [API Dependencies](server-api/build.gradle)
 * [App Dependencies](server-app/build.gradle)
@@ -42,9 +42,12 @@ Links to the most searched files
 
 A big thanks to these dudes!
 
-* [Project Cepi](https://github.com/Project-Cepi), author of [Sabre](https://github.com/Project-Cepi/Sabre)
-* [KlainStom](https://github.com/KlainStom), author of [microstom](https://github.com/KlainStom/microstom)
-* [ZakShearman](https://github.com/ZakShearman), author of [Operadora](https://github.com/ZakShearman/Operadora)
+* [Project Cepi](https://github.com/Project-Cepi), author
+  of [Sabre](https://github.com/Project-Cepi/Sabre)
+* [KlainStom](https://github.com/KlainStom), author
+  of [microstom](https://github.com/KlainStom/microstom)
+* [ZakShearman](https://github.com/ZakShearman), author
+  of [Operadora](https://github.com/ZakShearman/Operadora)
 * [Minestom wiki](https://wiki.minestom.net/)
 * [Minestom javadocs](https://javadoc.minestom.net/)
 
@@ -85,5 +88,5 @@ view-distance:
   entities: 10
 ````
 
-**Note: The configuration cannot be reloaded after the start. A restart must be performed for changes
-to be applied.**
+**Note: The configuration cannot be reloaded after the start. A restart must be performed for
+changes to be applied.**
