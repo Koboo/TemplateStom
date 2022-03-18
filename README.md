@@ -23,6 +23,12 @@ open-sourcing [Sabre](https://github.com/Project-Cepi/Sabre)!
 * Proxy support with Configuration (BungeeCord, Waterfall, Velocity)
 * Project structure to support API building
 
+## File Linking
+
+* [API Dependencies](/blob/main/server-api/build.gradle)
+* [App Dependencies](/blob/main/server-app/build.gradle)
+* [Launch](/blob/main/server-app/src/main/java/eu/koboo/minestom/Launch.java)
+
 ## Contributions
 
 If you want to contribute, pull requests are always welcome!
