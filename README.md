@@ -40,8 +40,10 @@ Links to the most searched files
 
 ## Credits
 
-A big thanks to [Project Cepi](https://github.com/Project-Cepi), for
-open-sourcing [Sabre](https://github.com/Project-Cepi/Sabre)!
+A big thanks to this dudes!
+* [Project Cepi](https://github.com/Project-Cepi), author of [Sabre](https://github.com/Project-Cepi/Sabre)
+* [KlainStom](https://github.com/KlainStom), author of [microstom](https://github.com/KlainStom/microstom)
+* [ZakShearman](https://github.com/ZakShearman), author of [Operadora](https://github.com/ZakShearman/Operadora)
 
 ## Contributions
 
@@ -83,5 +85,5 @@ view-distance:
 
 ````
 
-Note: The configuration cannot be reloaded after the start. A restart must be performed for changes
-to be applied.
+**Note: The configuration cannot be reloaded after the start. A restart must be performed for changes
+to be applied.**
