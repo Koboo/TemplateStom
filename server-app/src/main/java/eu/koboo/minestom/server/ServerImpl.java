@@ -36,6 +36,8 @@ public class ServerImpl extends Server {
     private final ServerConfig serverConfig;
 
     public ServerImpl() {
+        long startTime = System.nanoTime();
+
         instance = this;
 
         Logger.info("Loading settings..");
@@ -79,10 +81,22 @@ public class ServerImpl extends Server {
         eventHandler.addListener(PlayerLoginEvent.class, event -> {
             event.setSpawningInstance(instanceContainer);
             event.getPlayer().setRespawnPoint(new Pos(0, 44, 0));
+            event.getPlayer().setGameMode(serverConfig.gameMode());
         });
+
 
         String host = serverConfig.host();
         int port = serverConfig.port();
+
+        MinecraftServer.setBrandName(this.getName());
+        MinecraftServer.setDifficulty(serverConfig.difficulty());
+
+        MinecraftServer.setRateLimit(serverConfig.packetRateLimit());
+        MinecraftServer.setMaxPacketSize(serverConfig.maxPacketSize());
+        MinecraftServer.setCompressionThreshold(serverConfig.compressionThreshold());
+
+        setViewDistance("minestom.chunk-view-distance", serverConfig.chunkViewDistance());
+        setViewDistance("minestom.entity-view-distance", serverConfig.entityViewDistance());
 
         switch (serverConfig.proxyMode()) {
             case NONE -> {
@@ -113,6 +127,12 @@ public class ServerImpl extends Server {
         Logger.info("Listening on " + host + ":" + port);
 
         console.start();
+
+        double timeToStartInMillis = (double) (System.nanoTime() - startTime) / 1000000000;
+        timeToStartInMillis *= 100;
+        timeToStartInMillis = Math.round(timeToStartInMillis);
+        timeToStartInMillis /= 100;
+        Logger.info("Started in " + timeToStartInMillis + "s!");
     }
 
     @Override
@@ -128,5 +148,12 @@ public class ServerImpl extends Server {
     @Override
     public String getVersion() {
         return ProjectVariables.VERSION;
+    }
+
+    private void setViewDistance(String key, int value) {
+        if(System.getProperty(key) != null) {
+            return;
+        }
+        System.setProperty(key, Integer.valueOf(value).toString());
     }
 }
