@@ -6,6 +6,10 @@ released apart from the actual server.
 
 ## Specification
 
+Apart from the fact that this project serves as a template, it can be run and used as a server. You
+can either [build from source](https://github.com/Koboo/TemplateStom/archive/refs/heads/main.zip) or
+download the [latest release](https://github.com/Koboo/TemplateStom/releases/latest).
+
 * JDK: ``Java 17``
 * Minecraft-Version: ``1.18.2``
 * Gradle: ``7.2``
@@ -21,7 +25,8 @@ released apart from the actual server.
 
 ## Publishing
 
-If the API should be published via ``maven-publish``, it's [build.gradle](server-api/build.gradle) must be modified accordingly.
+If the API should be published via ``maven-publish``, it's [build.gradle](server-api/build.gradle)
+must be modified accordingly.
 
 ## File Linking
 
@@ -60,4 +65,5 @@ proxy:
   velocity-secret: ''
 ````
 
-Note: The configuration cannot be reloaded after the start. A restart must be performed for changes to be applied.
+Note: The configuration cannot be reloaded after the start. A restart must be performed for changes
+to be applied.
