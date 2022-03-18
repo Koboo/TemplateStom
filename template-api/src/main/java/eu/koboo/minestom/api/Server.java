@@ -1,5 +1,6 @@
 package eu.koboo.minestom.api;
 
+import eu.koboo.minestom.api.config.ServerConfig;
 import lombok.Getter;
 
 public abstract class Server {
@@ -10,5 +11,7 @@ public abstract class Server {
     public Server() {
         instance = this;
     }
+
+    public abstract ServerConfig getServerConfig();
 
 }

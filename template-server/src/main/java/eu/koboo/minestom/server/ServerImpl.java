@@ -33,11 +33,13 @@ public class ServerImpl extends Server {
     @Getter
     private final Console console;
 
+    private final ServerConfig serverConfig;
+
     public ServerImpl() {
         instance = this;
 
         Logger.info("Loading settings..");
-        ServerConfig serverConfig = ConfigLoader.loadConfig();
+        serverConfig = ConfigLoader.loadConfig();
 
         Logger.info("Initializing console..");
         console = new Console();
@@ -111,6 +113,11 @@ public class ServerImpl extends Server {
         Logger.info("Listening on " + host + ":" + port);
 
         console.start();
+    }
+
+    @Override
+    public ServerConfig getServerConfig() {
+        return serverConfig;
     }
 
 }
