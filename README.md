@@ -17,6 +17,7 @@ download the [latest release](https://github.com/Koboo/TemplateStom/releases/lat
 ## Features
 
 * ``stop``-Command to stop the server (Permission: ``command.stop``)
+* ``version``-Command to show current server version
 * Asynchronous writing of log-files
 * [ColorCode](https://minecraft.fandom.com/wiki/Formatting_codes) support in the Console
 * Proxy support (BungeeCord, Waterfall, Velocity)
