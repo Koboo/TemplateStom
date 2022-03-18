@@ -13,10 +13,11 @@ released apart from the actual server.
 ## Features
 
 * ``stop``-Command to stop the server (Permission: ``command.stop``)
-* Asynchronous writing of Log files
-* ColorCode support in the Console
-* Proxy support with Configuration (BungeeCord, Waterfall, Velocity)
-* Project structure to support API building
+* Asynchronous writing of log-files
+* [ColorCode](https://minecraft.fandom.com/wiki/Formatting_codes) support in the Console
+* Proxy support (BungeeCord, Waterfall, Velocity)
+* Structure to publish separate API
+* YAML configuration file (``server_config.yml``)
 
 ## Publishing
 
@@ -39,3 +40,22 @@ open-sourcing [Sabre](https://github.com/Project-Cepi/Sabre)!
 ## Contributions
 
 If you want to contribute, pull requests are always welcome!
+
+## Server Configuration
+
+This is the default configuration when the server gets started for the first time:
+
+````yaml
+server:
+  # The host address of the server
+  host: 0.0.0.0
+  # The listening port of the server
+  port: 25565
+  # Toggle online-mode (mojang authentication) of the server
+  online-mode: true
+proxy:
+  # Toggle proxy-mode of the server (options: NONE, BUNGEECORD, VELOCITY)
+  proxy-mode: NONE
+  # Set your velocity-secret
+  velocity-secret: ''
+````
