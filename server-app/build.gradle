@@ -18,10 +18,10 @@ dependencies {
     compileOnly "org.jetbrains:annotations:${annotationsVersion}"
     compileOnly "me.carleslc.Simple-YAML:Simple-Yaml:${yamlVersion}"
 
-    implementation 'org.tinylog:slf4j-tinylog:2.4.1'
-    implementation 'org.tinylog:tinylog-impl:2.4.1'
-    implementation 'org.fusesource.jansi:jansi:2.4.0'
-    implementation 'org.jline:jline:3.21.0'
+    implementation "org.tinylog:slf4j-tinylog:${tinylogVersion}"
+    implementation "org.tinylog:tinylog-impl:${tinylogVersion}"
+    implementation "org.fusesource.jansi:jansi:${jansiVersion}"
+    implementation "org.jline:jline:${jlineVersion}"
 
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
