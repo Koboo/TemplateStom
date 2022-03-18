@@ -37,4 +37,11 @@ public abstract class Server {
      */
     public abstract String getVersion();
 
+    /**
+     * Get the version of the Minestom library
+     *
+     * @return The used Minestom version
+     */
+    public abstract String getMinestomVersion();
+
 }

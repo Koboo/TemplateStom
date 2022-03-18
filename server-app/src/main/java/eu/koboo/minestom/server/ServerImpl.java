@@ -149,6 +149,11 @@ public class ServerImpl extends Server {
         return ProjectVariables.VERSION;
     }
 
+    @Override
+    public String getMinestomVersion() {
+        return ProjectVariables.MINESTOM_VERSION;
+    }
+
     private void setViewDistance(String key, int value) {
         if(System.getProperty(key) != null) {
             return;

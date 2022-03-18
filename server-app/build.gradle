@@ -46,4 +46,5 @@ shadowJar {
 blossom {
     replaceToken 'PROJECT_NAME', rootProject.name
     replaceToken 'PROJECT_VERSION', rootProject.version
+    replaceToken 'DEP_MINESTOM_VERSION', "${minestomVersion}"
 }
