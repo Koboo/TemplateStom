@@ -46,6 +46,7 @@ A big thanks to these dudes!
 * [KlainStom](https://github.com/KlainStom), author of [microstom](https://github.com/KlainStom/microstom)
 * [ZakShearman](https://github.com/ZakShearman), author of [Operadora](https://github.com/ZakShearman/Operadora)
 * [Minestom wiki](https://wiki.minestom.net/)
+* [Minestom javadocs](https://javadoc.minestom.net/)
 
 ## Contributions
 
