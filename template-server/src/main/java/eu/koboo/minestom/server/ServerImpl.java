@@ -120,4 +120,13 @@ public class ServerImpl extends Server {
         return serverConfig;
     }
 
+    @Override
+    public String getName() {
+        return ProjectVariables.NAME;
+    }
+
+    @Override
+    public String getVersion() {
+        return ProjectVariables.VERSION;
+    }
 }
