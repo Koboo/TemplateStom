@@ -59,3 +59,5 @@ proxy:
   # Set your velocity-secret
   velocity-secret: ''
 ````
+
+Note: The configuration cannot be reloaded after the start. A restart must be performed for changes to be applied.
