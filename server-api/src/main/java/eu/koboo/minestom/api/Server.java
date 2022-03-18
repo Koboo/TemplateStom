@@ -3,6 +3,9 @@ package eu.koboo.minestom.api;
 import eu.koboo.minestom.api.config.ServerConfig;
 import lombok.Getter;
 
+/**
+ * Abstract class to represent the actual implementation of the server
+ */
 public abstract class Server {
 
     @Getter
