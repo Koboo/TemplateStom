@@ -18,6 +18,9 @@ allprojects {
 
 }
 
+group "${authorGroup}"
+version "${authorVersion}"
+
 task cleanProject(type: Delete) {
     delete file('logs/')
     delete file('extensions/')

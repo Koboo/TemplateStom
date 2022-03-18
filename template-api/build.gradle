@@ -10,6 +10,7 @@ compileJava {
 dependencies {
     implementation "com.github.Minestom:Minestom:${minestomVersion}"
     implementation "org.jetbrains:annotations:${annotationsVersion}"
+    implementation "me.carleslc.Simple-YAML:Simple-Yaml:${yamlVersion}"
 
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
