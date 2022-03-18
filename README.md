@@ -40,7 +40,8 @@ Links to the most searched files
 
 ## Credits
 
-A big thanks to this dudes!
+A big thanks to these dudes!
+
 * [Project Cepi](https://github.com/Project-Cepi), author of [Sabre](https://github.com/Project-Cepi/Sabre)
 * [KlainStom](https://github.com/KlainStom), author of [microstom](https://github.com/KlainStom/microstom)
 * [ZakShearman](https://github.com/ZakShearman), author of [Operadora](https://github.com/ZakShearman/Operadora)
