@@ -3,6 +3,7 @@ package eu.koboo.minestom.server;
 import eu.koboo.minestom.api.server.Server;
 import eu.koboo.minestom.api.config.ServerConfig;
 import eu.koboo.minestom.commands.CommandStop;
+import eu.koboo.minestom.commands.CommandVersion;
 import eu.koboo.minestom.config.ConfigLoader;
 import eu.koboo.minestom.console.Console;
 import java.util.List;
@@ -55,6 +56,7 @@ public class ServerImpl extends Server {
 
         Logger.info("Registering commands..");
         MinecraftServer.getCommandManager().register(new CommandStop());
+        MinecraftServer.getCommandManager().register(new CommandVersion());
 
         Logger.info("Creating instance..");
         InstanceManager instanceManager = MinecraftServer.getInstanceManager();
