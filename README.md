@@ -25,9 +25,9 @@ open-sourcing [Sabre](https://github.com/Project-Cepi/Sabre)!
 
 ## File Linking
 
-* [API Dependencies](/blob/main/server-api/build.gradle)
-* [App Dependencies](/blob/main/server-app/build.gradle)
-* [Launch](/blob/main/server-app/src/main/java/eu/koboo/minestom/Launch.java)
+* [API Dependencies](server-api/build.gradle)
+* [App Dependencies](server-app/build.gradle)
+* [Launch](server-app/src/main/java/eu/koboo/minestom/Launch.java)
 
 ## Contributions
 
