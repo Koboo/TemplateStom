@@ -4,7 +4,7 @@ instances/
 extensions/
 .minestom_tmp
 logs/
-server_settings.yml
+server_config.yml
 
 # Ignored
 template-server/build/

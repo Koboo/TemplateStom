@@ -1,4 +1,4 @@
-package eu.koboo.minestom.config;
+package eu.koboo.minestom.api.config;
 
 public enum ProxyMode {
 

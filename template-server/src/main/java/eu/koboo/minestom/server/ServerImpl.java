@@ -1,8 +1,9 @@
 package eu.koboo.minestom.server;
 
 import eu.koboo.minestom.api.Server;
+import eu.koboo.minestom.api.config.ServerConfig;
 import eu.koboo.minestom.commands.CommandStop;
-import eu.koboo.minestom.config.ServerConfig;
+import eu.koboo.minestom.config.ConfigLoader;
 import eu.koboo.minestom.console.Console;
 import java.util.List;
 import lombok.Getter;
@@ -36,7 +37,7 @@ public class ServerImpl extends Server {
         instance = this;
 
         Logger.info("Loading settings..");
-        ServerConfig serverConfig = ServerConfig.load();
+        ServerConfig serverConfig = ConfigLoader.loadConfig();
 
         Logger.info("Initializing console..");
         console = new Console();
@@ -91,12 +92,12 @@ public class ServerImpl extends Server {
                 }
             }
             case VELOCITY -> {
-                if (serverConfig.proxySecret() == null || serverConfig.proxySecret().equalsIgnoreCase("")) {
+                if (serverConfig.velocitySecret() == null || serverConfig.velocitySecret().equalsIgnoreCase("")) {
                     Logger.warn("ProxyMode 'VELOCITY' selected, but no proxy-secret set! Abort!");
                     System.exit(0);
                     break;
                 }
-                VelocityProxy.enable(serverConfig.proxySecret());
+                VelocityProxy.enable(serverConfig.velocitySecret());
                 Logger.info("ProxyMode 'VELOCITY', enabled VelocityProxy.");
             }
             case BUNGEECORD -> {
