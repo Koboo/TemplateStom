@@ -26,6 +26,6 @@ task cleanProject(type: Delete) {
     delete file('extensions/')
     delete file('configs/')
     delete rootProject.buildDir
-    delete project(':template-api').buildDir
-    delete project(':template-server').buildDir
+    delete project(':server-api').buildDir
+    delete project(':server-app').buildDir
 }

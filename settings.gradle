@@ -1,3 +1,3 @@
-rootProject.name = 'template-stom'
-include(':template-server')
-include(':template-api')
+rootProject.name = 'minestom-server-software'
+include(':server-api')
+include(':server-app')

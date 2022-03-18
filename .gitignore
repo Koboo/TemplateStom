@@ -7,8 +7,8 @@ logs/
 server_config.yml
 
 # Ignored
-template-server/build/
-template-api/build/
+server-app/build/
+server-api/build/
 .idea
 .gradle
 

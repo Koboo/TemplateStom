@@ -26,7 +26,7 @@ dependencies {
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
-    implementation project(":template-api")
+    implementation project(":server-api")
 }
 
 shadowJar {
