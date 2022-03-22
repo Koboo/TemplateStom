@@ -26,8 +26,7 @@ download the [latest release](https://github.com/Koboo/TemplateStom/releases/lat
 
 ## Publishing
 
-If the API should be published via ``maven-publish``, then you have to configure it
-in it's [build.gradle](server-api/build.gradle).
+If the API should be published via ``maven-publish``, then you have to configure the [build.gradle](server-api/build.gradle).
 
 ## File Linking
 
