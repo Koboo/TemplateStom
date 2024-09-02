@@ -10,7 +10,7 @@ compileJava {
 }
 
 dependencies {
-    implementation "com.github.Minestom:Minestom:${minestomVersion}"
+    implementation "net.minestom:minestom-snapshots:${minestomVersion}"
     implementation "org.jetbrains:annotations:${annotationsVersion}"
     implementation "me.carleslc.Simple-YAML:Simple-Yaml:${yamlVersion}"
 

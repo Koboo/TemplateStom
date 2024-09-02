@@ -14,7 +14,7 @@ compileJava {
 mainClassName = 'eu.koboo.minestom.Launch'
 
 dependencies {
-    compileOnly "com.github.Minestom:Minestom:${minestomVersion}"
+    compileOnly "net.minestom:minestom-snapshots:${minestomVersion}"
     compileOnly "org.jetbrains:annotations:${annotationsVersion}"
     compileOnly "me.carleslc.Simple-YAML:Simple-Yaml:${yamlVersion}"
 
