@@ -1,32 +1,22 @@
 package eu.koboo.minestom.server;
 
-import eu.koboo.minestom.api.server.Server;
 import eu.koboo.minestom.api.config.ServerConfig;
+import eu.koboo.minestom.api.server.Server;
 import eu.koboo.minestom.commands.CommandStop;
 import eu.koboo.minestom.commands.CommandVersion;
 import eu.koboo.minestom.config.ConfigLoader;
 import eu.koboo.minestom.console.Console;
-import java.util.List;
 import lombok.Getter;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.player.AsyncPlayerConfigurationEvent;
-import net.minestom.server.event.player.PlayerLoginEvent;
 import net.minestom.server.extras.MojangAuth;
 import net.minestom.server.extras.bungee.BungeeCordProxy;
 import net.minestom.server.extras.velocity.VelocityProxy;
-import net.minestom.server.instance.Chunk;
-import net.minestom.server.instance.ChunkGenerator;
-import net.minestom.server.instance.ChunkPopulator;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.InstanceManager;
-import net.minestom.server.instance.batch.ChunkBatch;
 import net.minestom.server.instance.block.Block;
-import net.minestom.server.instance.generator.GenerationUnit;
-import net.minestom.server.instance.generator.Generator;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.tinylog.Logger;
 
 public class ServerImpl extends Server {
@@ -149,7 +139,7 @@ public class ServerImpl extends Server {
     }
 
     private void setViewDistance(String key, int value) {
-        if(System.getProperty(key) != null) {
+        if (System.getProperty(key) != null) {
             return;
         }
         System.setProperty(key, Integer.valueOf(value).toString());
