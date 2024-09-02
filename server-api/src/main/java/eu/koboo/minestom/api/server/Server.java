@@ -1,6 +1,8 @@
 package eu.koboo.minestom.api.server;
 
 import eu.koboo.minestom.api.config.ServerConfig;
+import eu.koboo.minestom.api.world.World;
+import eu.koboo.minestom.api.world.manager.WorldManager;
 import lombok.Getter;
 
 /**
@@ -43,5 +45,9 @@ public abstract class Server {
      * @return The used Minestom version
      */
     public abstract String getMinestomVersion();
+
+    public abstract WorldManager getWorldManager();
+
+    public abstract World getDefaulWorld();
 
 }

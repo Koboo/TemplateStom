@@ -2,11 +2,16 @@ package eu.koboo.minestom.server;
 
 import eu.koboo.minestom.api.config.ServerConfig;
 import eu.koboo.minestom.api.server.Server;
+import eu.koboo.minestom.api.world.World;
+import eu.koboo.minestom.api.world.manager.WorldManager;
 import eu.koboo.minestom.commands.CommandStop;
 import eu.koboo.minestom.commands.CommandVersion;
 import eu.koboo.minestom.config.ConfigLoader;
 import eu.koboo.minestom.console.Console;
+import eu.koboo.minestom.server.world.WorldManagerImpl;
 import lombok.Getter;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.event.GlobalEventHandler;
@@ -16,18 +21,24 @@ import net.minestom.server.extras.bungee.BungeeCordProxy;
 import net.minestom.server.extras.velocity.VelocityProxy;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.InstanceManager;
+import net.minestom.server.instance.anvil.AnvilLoader;
 import net.minestom.server.instance.block.Block;
+import net.minestom.server.world.DimensionType;
 import org.tinylog.Logger;
 
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class ServerImpl extends Server {
 
     @Getter
-    private static ServerImpl instance;
+    @NonFinal
+    static ServerImpl instance;
 
-    private final ServerConfig serverConfig;
+    ServerConfig serverConfig;
+
+    WorldManagerImpl worldManager;
 
     @Getter
-    private final Console console;
+    Console console;
 
     public ServerImpl() {
         long startTime = System.nanoTime();
@@ -39,6 +50,9 @@ public class ServerImpl extends Server {
 
         Logger.info("Initializing console..");
         console = new Console();
+
+        Logger.info("Initializing world manager..");
+        worldManager = new WorldManagerImpl();
 
         Logger.info("Initializing server..");
         MinecraftServer minecraftServer = MinecraftServer.init();
@@ -52,17 +66,7 @@ public class ServerImpl extends Server {
 
         Logger.info("Creating instance..");
         InstanceManager instanceManager = MinecraftServer.getInstanceManager();
-        InstanceContainer instanceContainer = instanceManager.createInstanceContainer();
-
-        instanceContainer.setGenerator(unit -> {
-            unit.modifier().fillHeight(0, 36, Block.STONE);
-            unit.modifier().fillHeight(37, 39, Block.DIRT);
-            for (int x = 0; x < 16; x++) {
-                for (int z = 0; z < 16; z++) {
-                    unit.modifier().setBlock(x, 40, z, Block.GRASS_BLOCK);
-                }
-            }
-        });
+        InstanceContainer instanceContainer = instanceManager.createInstanceContainer(new AnvilLoader("minestom:world"));
 
         GlobalEventHandler eventHandler = MinecraftServer.getGlobalEventHandler();
         eventHandler.addListener(AsyncPlayerConfigurationEvent.class, event -> {
@@ -136,6 +140,18 @@ public class ServerImpl extends Server {
     @Override
     public String getMinestomVersion() {
         return ProjectVariables.MINESTOM_VERSION;
+    }
+
+    @Override
+    public WorldManager getWorldManager() {
+        return worldManager;
+    }
+
+    @Override
+    public World getDefaulWorld() {
+        World defaultWorld = new World();
+        defaultWorld.setDimensionType(DimensionType.builder().build());
+        return defaultWorld;
     }
 
     private void setViewDistance(String key, int value) {
