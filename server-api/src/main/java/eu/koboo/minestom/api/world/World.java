@@ -2,6 +2,7 @@ package eu.koboo.minestom.api.world;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import net.minestom.server.coordinate.Pos;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.world.DimensionType;
 
@@ -15,5 +16,7 @@ public class World {
     String name;
     InstanceContainer instanceContainer;
     DimensionType dimensionType;
+
+    Pos spawnPoint;
 
 }

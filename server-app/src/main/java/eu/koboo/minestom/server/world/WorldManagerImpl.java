@@ -6,9 +6,11 @@ import eu.koboo.minestom.api.world.manager.WorldManager;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.coordinate.Pos;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.InstanceManager;
 import net.minestom.server.instance.anvil.AnvilLoader;
+import org.simpleyaml.configuration.file.YamlFile;
 import org.tinylog.Logger;
 
 import java.io.File;
@@ -153,6 +155,11 @@ public class WorldManagerImpl implements WorldManager {
             loadedWorld.setName(name);
             loadedWorld.setInstanceContainer(instance);
             loadedWorld.setDimensionType(Dimension.OVERWORLD.getDimensionType());
+
+            // Set spawn point
+            Pos spawnPoint = loadConfig(name);
+            loadedWorld.setSpawnPoint(spawnPoint);
+
             loadedWorlds.put(name, loadedWorld);
             loadedInstances.put(name, instance);
             double timeInMillis = (System.nanoTime() - startTime) / 1_000_000.0;
@@ -189,6 +196,11 @@ public class WorldManagerImpl implements WorldManager {
         }
     }
 
+    @Override
+    public Pos getSpawnPoint(World world) {
+        return world.getSpawnPoint();
+    }
+
     private Path getDefaultWorldRegionFolder() {
         URL resourceUrl = getClass().getClassLoader().getResource("worlds/default/region");
         if (resourceUrl == null) {
@@ -198,6 +210,44 @@ public class WorldManagerImpl implements WorldManager {
             return Paths.get(resourceUrl.toURI());
         } catch (Exception e) {
             throw new RuntimeException("Failed to convert URL to Path", e);
+        }
+    }
+
+    private Pos loadConfig(String worldName) {
+        try {
+            Path dir = Path.of("worlds/" + worldName);
+            YamlFile yamlFile = new YamlFile(dir.resolve("minestom-world.yml").toString());
+            yamlFile.options().copyDefaults(true);
+            if (!yamlFile.exists()) {
+                yamlFile.createNewFile();
+            }
+            yamlFile.loadWithComments();
+
+            defaultValue(yamlFile, "spawn.x", 0.0D, "The x-coordinate of the spawnpoint");
+            defaultValue(yamlFile, "spawn.y", 41.0D, "The y-coordinate of the spawnpoint");
+            defaultValue(yamlFile, "spawn.z", 0.0D, "The z-coordinate of the spawnpoint");
+            defaultValue(yamlFile, "spawn.yaw", 0.0F, "The yaw of the spawnpoint");
+            defaultValue(yamlFile, "spawn.pitch", 0.0F, "The pitch of the spawnpoint");
+
+            yamlFile.save();
+
+            double x = yamlFile.getInt("spawn.x");
+            double y = yamlFile.getInt("spawn.y");
+            double z = yamlFile.getInt("spawn.z");
+            float yaw = yamlFile.getInt("spawn.yaw");
+            float pitch = yamlFile.getInt("spawn.pitch");
+
+            return new Pos(x, y, z, yaw, pitch);
+        } catch (IOException e) {
+            Logger.error("Failed to load world configuration", e);
+        }
+        return new Pos(0.0D, 41.0D, 0.0D, 0.0F, 0.0F);
+    }
+
+    private void defaultValue(YamlFile yamlFile, String key, Object value, String comment) {
+        if(!yamlFile.contains(key)) {
+            yamlFile.set(key, value);
+            yamlFile.setComment(key, comment);
         }
     }
 }

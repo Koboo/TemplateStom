@@ -67,7 +67,7 @@ public class ServerImpl extends Server {
 
         Logger.info("Creating instance..");
         InstanceManager instanceManager = MinecraftServer.getInstanceManager();
-        InstanceContainer instanceContainer = instanceManager.createInstanceContainer(new AnvilLoader("minestom:world"));
+        InstanceContainer instanceContainer = getDefaulWorld().getInstanceContainer();
 
         GlobalEventHandler eventHandler = MinecraftServer.getGlobalEventHandler();
         eventHandler.addListener(AsyncPlayerConfigurationEvent.class, event -> {
@@ -150,8 +150,7 @@ public class ServerImpl extends Server {
 
     @Override
     public World getDefaulWorld() {
-        World defaultWorld = worldManager.createWorld(WorldManagerImpl.DEFAULT_WORLD_NAME, Dimension.OVERWORLD);
-        return defaultWorld;
+        return worldManager.createWorld(WorldManagerImpl.DEFAULT_WORLD_NAME, Dimension.OVERWORLD);
     }
 
     private void setViewDistance(String key, int value) {

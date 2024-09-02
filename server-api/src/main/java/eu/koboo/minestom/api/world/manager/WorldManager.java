@@ -2,6 +2,7 @@ package eu.koboo.minestom.api.world.manager;
 
 import eu.koboo.minestom.api.world.World;
 import eu.koboo.minestom.api.world.dimension.Dimension;
+import net.minestom.server.coordinate.Pos;
 import net.minestom.server.world.DimensionType;
 
 public interface WorldManager {
@@ -21,5 +22,7 @@ public interface WorldManager {
     void saveWorld(String name);
 
     void saveAllWorlds();
+
+    Pos getSpawnPoint(World world);
 
 }
