@@ -11,6 +11,7 @@ import lombok.Getter;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.event.GlobalEventHandler;
+import net.minestom.server.event.player.AsyncPlayerConfigurationEvent;
 import net.minestom.server.event.player.PlayerLoginEvent;
 import net.minestom.server.extras.MojangAuth;
 import net.minestom.server.extras.bungee.BungeeCordProxy;
@@ -22,6 +23,8 @@ import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.InstanceManager;
 import net.minestom.server.instance.batch.ChunkBatch;
 import net.minestom.server.instance.block.Block;
+import net.minestom.server.instance.generator.GenerationUnit;
+import net.minestom.server.instance.generator.Generator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.tinylog.Logger;
@@ -61,26 +64,19 @@ public class ServerImpl extends Server {
         Logger.info("Creating instance..");
         InstanceManager instanceManager = MinecraftServer.getInstanceManager();
         InstanceContainer instanceContainer = instanceManager.createInstanceContainer();
-        instanceContainer.setChunkGenerator(new ChunkGenerator() {
-            @Override
-            public void generateChunkData(
-                    @NotNull ChunkBatch batch,
-                    int chunkX, int chunkZ) {
-                for(int x = 0; x < Chunk.CHUNK_SIZE_X; x++) {
-                    for(int z = 0; z < Chunk.CHUNK_SIZE_Z; z++) {
-                        batch.setBlock(x, 0, z, Block.BARRIER);
-                    }
-                }
-            }
 
-            @Override
-            public @Nullable List<ChunkPopulator> getPopulators() {
-                return null;
+        instanceContainer.setGenerator(unit -> {
+            unit.modifier().fillHeight(0, 36, Block.STONE);
+            unit.modifier().fillHeight(37, 39, Block.DIRT);
+            for (int x = 0; x < 16; x++) {
+                for (int z = 0; z < 16; z++) {
+                    unit.modifier().setBlock(x, 40, z, Block.GRASS_BLOCK);
+                }
             }
         });
 
         GlobalEventHandler eventHandler = MinecraftServer.getGlobalEventHandler();
-        eventHandler.addListener(PlayerLoginEvent.class, event -> {
+        eventHandler.addListener(AsyncPlayerConfigurationEvent.class, event -> {
             event.setSpawningInstance(instanceContainer);
             event.getPlayer().setRespawnPoint(new Pos(0, 44, 0));
         });
