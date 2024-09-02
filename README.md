@@ -10,8 +10,8 @@ This template can also be run as a server. You can
 either [build from source](https://github.com/Koboo/TemplateStom/archive/refs/heads/main.zip) or
 download the [latest release](https://github.com/Koboo/TemplateStom/releases/latest).
 
-* JDK: ``Java 17``
-* Minecraft-Version: ``1.18.2``
+* JDK: ``Java 17+``
+* Minecraft-Version: ``1.20.4``
 * Gradle: ``7.2``
 
 ## Features
