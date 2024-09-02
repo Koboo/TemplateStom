@@ -87,8 +87,6 @@ public class ServerImpl extends Server {
         MinecraftServer.setBrandName(this.getName());
         MinecraftServer.setDifficulty(serverConfig.difficulty());
 
-        MinecraftServer.setRateLimit(serverConfig.packetRateLimit());
-        MinecraftServer.setMaxPacketSize(serverConfig.maxPacketSize());
         MinecraftServer.setCompressionThreshold(serverConfig.compressionThreshold());
 
         setViewDistance("minestom.chunk-view-distance", serverConfig.chunkViewDistance());
