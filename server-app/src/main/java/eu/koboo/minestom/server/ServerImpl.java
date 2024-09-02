@@ -3,6 +3,7 @@ package eu.koboo.minestom.server;
 import eu.koboo.minestom.api.config.ServerConfig;
 import eu.koboo.minestom.api.server.Server;
 import eu.koboo.minestom.api.world.World;
+import eu.koboo.minestom.api.world.dimension.Dimension;
 import eu.koboo.minestom.api.world.manager.WorldManager;
 import eu.koboo.minestom.commands.CommandStop;
 import eu.koboo.minestom.commands.CommandVersion;
@@ -149,8 +150,7 @@ public class ServerImpl extends Server {
 
     @Override
     public World getDefaulWorld() {
-        World defaultWorld = new World();
-        defaultWorld.setDimensionType(DimensionType.builder().build());
+        World defaultWorld = worldManager.createWorld(WorldManagerImpl.DEFAULT_WORLD_NAME, Dimension.OVERWORLD);
         return defaultWorld;
     }
 
