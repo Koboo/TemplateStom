@@ -67,7 +67,7 @@ public class ServerImpl extends Server {
         GlobalEventHandler eventHandler = MinecraftServer.getGlobalEventHandler();
         eventHandler.addListener(AsyncPlayerConfigurationEvent.class, event -> {
             event.setSpawningInstance(instanceContainer);
-            event.getPlayer().setRespawnPoint(new Pos(0, 44, 0));
+            event.getPlayer().setRespawnPoint(new Pos(0, 41, 0));
         });
 
         String host = serverConfig.host();
