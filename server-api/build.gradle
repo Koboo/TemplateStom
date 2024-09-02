@@ -5,12 +5,13 @@ plugins {
 }
 
 compileJava {
-    targetCompatibility = JavaVersion.VERSION_17
-    sourceCompatibility = JavaVersion.VERSION_17
+    version = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_21
 }
 
 dependencies {
-    implementation "com.github.Minestom:Minestom:${minestomVersion}"
+    implementation "net.minestom:minestom-snapshots:${minestomVersion}"
     implementation "org.jetbrains:annotations:${annotationsVersion}"
     implementation "me.carleslc.Simple-YAML:Simple-Yaml:${yamlVersion}"
 

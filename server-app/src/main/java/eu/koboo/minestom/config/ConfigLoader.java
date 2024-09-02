@@ -30,8 +30,6 @@ public class ConfigLoader {
       defaultValue(cfg, "proxy.proxy-mode", ProxyMode.NONE.name(), "Toggle proxy-mode (options: NONE, BUNGEECORD, VELOCITY)");
       defaultValue(cfg, "proxy.velocity-secret", "", "Set your velocity-secret (Do not share that!)");
 
-      defaultValue(cfg, "packets.rate-limit", 450, "Set the rate-limit of packets/second for the clients (0 disables rate-limit)");
-      defaultValue(cfg, "packets.max-size", 2097151, "Set the max-size of packets from the clients (maximum is 2097151 bytes)");
       defaultValue(cfg, "packets.compression-threshold", "", "Set the compression-threshold of packets (0 disables compression)");
 
       defaultValue(cfg, "view-distance.chunks", 10, "Set the view-distance of chunks (range between 2 and 32)");
@@ -58,7 +56,7 @@ public class ConfigLoader {
       return new ServerConfig(
           host, port, onlineMode, difficulty,
           proxyMode, velocitySecret,
-          rateLimit, maxPacketSize, compressionThreshold,
+          compressionThreshold,
           viewDistanceChunks, viewDistanceEntities
       );
     } catch (IOException e) {

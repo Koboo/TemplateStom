@@ -3,7 +3,7 @@ package eu.koboo.minestom;
 import eu.koboo.minestom.server.ServerImpl;
 import org.fusesource.jansi.AnsiConsole;
 
-public class Launch {
+public class Launcher {
 
     public static void main(String[] args) {
         try {
