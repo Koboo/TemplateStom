@@ -52,7 +52,6 @@ public class ServerImpl extends Server {
 
         Logger.info("Initializing server..");
         MinecraftServer minecraftServer = MinecraftServer.init();
-        MinecraftServer.setTerminalEnabled(false);
 
         MinecraftServer.getExceptionManager()
                 .setExceptionHandler(exc -> Logger.error("An unexpected error occurred! ", exc));
