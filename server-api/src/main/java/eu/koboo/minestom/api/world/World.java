@@ -5,6 +5,7 @@ import lombok.experimental.FieldDefaults;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.world.DimensionType;
+import org.simpleyaml.configuration.file.YamlFile;
 
 @Getter
 @Setter
@@ -18,5 +19,7 @@ public class World {
     DimensionType dimensionType;
 
     Pos spawnPoint;
+
+    YamlFile worldConfig;
 
 }

@@ -15,7 +15,7 @@ public abstract class Server {
     @NonNull
     private static Server instance;
 
-    public Server() {
+    public Server(String[] args) {
         instance = this;
     }
 

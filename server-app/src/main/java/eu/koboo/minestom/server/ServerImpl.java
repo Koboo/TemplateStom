@@ -27,8 +27,12 @@ import net.minestom.server.instance.block.Block;
 import net.minestom.server.world.DimensionType;
 import org.tinylog.Logger;
 
+import java.util.Arrays;
+
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class ServerImpl extends Server {
+
+    public static boolean DEBUG = false;
 
     @Getter
     @NonFinal
@@ -41,7 +45,13 @@ public class ServerImpl extends Server {
     @Getter
     Console console;
 
-    public ServerImpl() {
+    public ServerImpl(String[] args) {
+        super(args);
+
+        if (Arrays.stream(args).anyMatch(s -> s.equalsIgnoreCase("--debug"))) {
+            Logger.info("Debug mode enabled!");
+            DEBUG = true;
+        }
         long startTime = System.nanoTime();
 
         instance = this;
@@ -65,16 +75,6 @@ public class ServerImpl extends Server {
         MinecraftServer.getCommandManager().register(new CommandStop());
         MinecraftServer.getCommandManager().register(new CommandVersion());
 
-        Logger.info("Creating instance..");
-        InstanceManager instanceManager = MinecraftServer.getInstanceManager();
-        InstanceContainer instanceContainer = getDefaulWorld().getInstanceContainer();
-
-        GlobalEventHandler eventHandler = MinecraftServer.getGlobalEventHandler();
-        eventHandler.addListener(AsyncPlayerConfigurationEvent.class, event -> {
-            event.setSpawningInstance(instanceContainer);
-            event.getPlayer().setRespawnPoint(new Pos(0, 41, 0));
-        });
-
         String host = serverConfig.host();
         int port = serverConfig.port();
 
@@ -92,7 +92,12 @@ public class ServerImpl extends Server {
                     MojangAuth.init();
                     Logger.info("ProxyMode 'NONE', enabled MojangAuth.");
                 } else {
-                    Logger.info("ProxyMode 'NONE', without MojangAuth.");
+                    if (Arrays.stream(args).noneMatch(s -> s.equalsIgnoreCase("--cracked"))) {
+                        Logger.warn("ProxyMode 'NONE', without MojangAuth.");
+                        Logger.warn("WARNING: This is not recommended, as it allows cracked clients to join!");
+                        Logger.warn("WARNING: Please enable MojangAuth or use a proxy, unless you know what you are doing!");
+                        Logger.warn("To disable this warning, start the server with --cracked");
+                    }
                 }
             }
             case VELOCITY -> {
@@ -110,6 +115,11 @@ public class ServerImpl extends Server {
             }
         }
         Logger.info("Starting @ " + host + ":" + port);
+
+        setupDefaultWorld();
+
+        Logger.info("Loading worlds..");
+        worldManager.loadAllAvailableWorlds();
 
         minecraftServer.start(host, port);
         Logger.info("Listening on " + host + ":" + port);
@@ -151,6 +161,15 @@ public class ServerImpl extends Server {
     @Override
     public World getDefaulWorld() {
         return worldManager.createWorld(WorldManagerImpl.DEFAULT_WORLD_NAME, Dimension.OVERWORLD);
+    }
+
+    private void setupDefaultWorld() {
+        InstanceContainer instanceContainer = getDefaulWorld().getInstanceContainer();
+        GlobalEventHandler eventHandler = MinecraftServer.getGlobalEventHandler();
+        eventHandler.addListener(AsyncPlayerConfigurationEvent.class, event -> {
+            event.setSpawningInstance(instanceContainer);
+            event.getPlayer().setRespawnPoint(new Pos(0, 41, 0));
+        });
     }
 
     private void setViewDistance(String key, int value) {

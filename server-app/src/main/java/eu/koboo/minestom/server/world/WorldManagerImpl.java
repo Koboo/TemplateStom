@@ -3,6 +3,8 @@ package eu.koboo.minestom.server.world;
 import eu.koboo.minestom.api.world.World;
 import eu.koboo.minestom.api.world.dimension.Dimension;
 import eu.koboo.minestom.api.world.manager.WorldManager;
+import eu.koboo.minestom.files.PathWithFileSystem;
+import eu.koboo.minestom.server.ServerImpl;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import net.minestom.server.MinecraftServer;
@@ -15,11 +17,11 @@ import org.tinylog.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,35 +44,58 @@ public class WorldManagerImpl implements WorldManager {
         long startTime = System.nanoTime();
         World createdWorld = new World();
         Path dir = Path.of("worlds/" + name);
-        if (Files.exists(dir)) {
-            Logger.warn("World directory already exists; loading instead");
-            InstanceContainer createdInstance = MinecraftServer.getInstanceManager().createInstanceContainer(new AnvilLoader("worlds/" + name));
-            createdWorld.setName(name);
-            createdWorld.setInstanceContainer(createdInstance);
-            createdWorld.setDimensionType(dimensionType.getDimensionType());
-            loadedWorlds.put(name, createdWorld);
-            loadedInstances.put(name, createdInstance);
-            Logger.info("World loaded: " + name);
-            return createdWorld;
-        }
         try {
-            Files.createDirectory(dir);
-            Path defaultRegionFolder = getDefaultWorldRegionFolder();
-            Files.walk(defaultRegionFolder)
-                    .filter(Files::isRegularFile)
-                    .forEach(source -> {
-                        try {
-                            Path destination = dir.resolve(defaultRegionFolder.relativize(source));
-                            Files.createDirectories(destination.getParent());
-                            Files.copy(source, destination);
-                        } catch (IOException e) {
-                            Logger.error("Failed to copy default world region files", e);
-                        }
-                    });
+            if (!Files.exists(dir.getParent())) {
+                Files.createDirectories(dir.getParent());
+            } else {
+                if (ServerImpl.DEBUG) Logger.info("Parent directory already exists: " + dir.getParent());
+            }
+            if (!Files.exists(dir, LinkOption.NOFOLLOW_LINKS)) {
+                Files.createDirectory(dir);
+            } else {
+                if (ServerImpl.DEBUG) Logger.info("World directory already exists: " + dir);
+            }
+            PathWithFileSystem defaultRegionFolderWithFS = getDefaultWorldRegionFolder();
+            Path defaultRegionFolder = defaultRegionFolderWithFS.getPath();
+            FileSystem fileSystem = defaultRegionFolderWithFS.getFileSystem();
+            try {
+                Files.walk(defaultRegionFolder)
+                        .filter(Files::isRegularFile)
+                        .forEach(source -> {
+                            try {
+                                Path destination = dir.resolve(defaultRegionFolder.relativize(source).toString());
+                                Files.createDirectories(destination.getParent());
+                                if (!Files.exists(destination, LinkOption.NOFOLLOW_LINKS)) {
+                                    Files.copy(source, destination);
+                                } else {
+                                    if (ServerImpl.DEBUG) Logger.info("File already exists; skipping copy: " + destination);
+                                }
+                            } catch (IOException e) {
+                                Logger.error("Failed to copy default world region files", e);
+                                e.printStackTrace();
+                            }
+                        });
+            } finally {
+                if (fileSystem != null) {
+                    fileSystem.close();
+                }
+            }
             InstanceContainer createdInstance = MinecraftServer.getInstanceManager().createInstanceContainer(new AnvilLoader("worlds/" + name));
             createdWorld.setName(name);
             createdWorld.setInstanceContainer(createdInstance);
             createdWorld.setDimensionType(dimensionType.getDimensionType());
+            YamlFile yamlFile = createdWorld.getWorldConfig();
+            if (yamlFile != null) {
+                try {
+                    yamlFile.save();
+                    createdWorld.setWorldConfig(yamlFile);
+                } catch (IOException e) {
+                    Logger.error("Failed to save world configuration", e);
+                }
+            } else {
+                YamlFile newConfig = getConfig(name);
+                createdWorld.setWorldConfig(newConfig);
+            }
             loadedWorlds.put(name, createdWorld);
             loadedInstances.put(name, createdInstance);
             double timeInMillis = (System.nanoTime() - startTime) / 1_000_000.0;
@@ -82,6 +107,22 @@ public class WorldManagerImpl implements WorldManager {
         }
     }
 
+    public void loadAllAvailableWorlds() {
+        long startTime = System.nanoTime();
+        File[] files = new File("worlds").listFiles();
+        if (files == null) {
+            return;
+        }
+        Arrays.stream(files)
+                .filter(File::isDirectory)
+                .map(File::getName)
+                .filter(name -> !name.equals(DEFAULT_WORLD_NAME))
+                .filter(name -> !loadedWorlds.containsKey(name))
+                .forEach(this::loadWorld);
+        double timeInMillis = (System.nanoTime() - startTime) / 1_000_000.0;
+        Logger.info("All available worlds loaded in " + String.format("%.2fms", timeInMillis));
+    }
+
     @Override
     public void deleteWorld(World world) {
         long startTime = System.nanoTime();
@@ -89,6 +130,14 @@ public class WorldManagerImpl implements WorldManager {
         World deletedWorld = loadedWorlds.get(name);
         if (deletedWorld == null) {
             return;
+        }
+        YamlFile yamlFile = deletedWorld.getWorldConfig();
+        if (yamlFile != null) {
+            try {
+                yamlFile.save();
+            } catch (IOException e) {
+                Logger.error("Failed to save world configuration", e);
+            }
         }
         Path dir = Path.of("worlds/" + name);
         if (Files.exists(dir, LinkOption.NOFOLLOW_LINKS)) {
@@ -127,6 +176,14 @@ public class WorldManagerImpl implements WorldManager {
         if (unloadedWorld == null) {
             return;
         }
+        YamlFile yamlFile = unloadedWorld.getWorldConfig();
+        if (yamlFile != null) {
+            try {
+                yamlFile.save();
+            } catch (IOException e) {
+                Logger.error("Failed to save world configuration", e);
+            }
+        }
         Logger.info("Unloading world: " + name);
         InstanceContainer instance = unloadedWorld.getInstanceContainer();
         if (instance != null) {
@@ -144,10 +201,10 @@ public class WorldManagerImpl implements WorldManager {
         long startTime = System.nanoTime();
         World world = loadedWorlds.get(name);
         if (world != null) {
-            Logger.warn("World already loaded; skipping load");
+            if (ServerImpl.DEBUG) Logger.warn("World already loaded; skipping load");
             return;
         }
-        Logger.info("Loading world: " + name);
+        if (ServerImpl.DEBUG) Logger.info("Loading world: " + name);
         InstanceContainer instance = MinecraftServer.getInstanceManager().createInstanceContainer(new AnvilLoader("worlds/" + name));
         Path dir = Path.of("worlds/" + name);
         if (Files.exists(dir, LinkOption.NOFOLLOW_LINKS)) {
@@ -158,12 +215,14 @@ public class WorldManagerImpl implements WorldManager {
 
             // Set spawn point
             Pos spawnPoint = loadConfig(name);
+
             loadedWorld.setSpawnPoint(spawnPoint);
+            loadedWorld.setWorldConfig(getConfig(name));
 
             loadedWorlds.put(name, loadedWorld);
             loadedInstances.put(name, instance);
             double timeInMillis = (System.nanoTime() - startTime) / 1_000_000.0;
-            Logger.info("World loaded in " + String.format("%.2fms", timeInMillis) + ": " + name);
+            if (ServerImpl.DEBUG) Logger.info("World loaded in " + String.format("%.2fms", timeInMillis) + ": " + name);
             return;
         }
         Logger.error("World directory not found. To create a new world, use the createWorld method.");
@@ -173,9 +232,17 @@ public class WorldManagerImpl implements WorldManager {
     public void saveWorld(String name) {
         long startTime = System.nanoTime();
         World world = loadedWorlds.get(name);
+        YamlFile yamlFile = world.getWorldConfig();
         if (world == null) {
             Logger.warn("World not loaded; skipping save");
             return;
+        }
+        if (yamlFile != null) {
+            try {
+                yamlFile.save();
+            } catch (IOException e) {
+                Logger.error("Failed to save world configuration", e);
+            }
         }
         InstanceContainer instance = world.getInstanceContainer();
         if (instance != null) {
@@ -201,16 +268,44 @@ public class WorldManagerImpl implements WorldManager {
         return world.getSpawnPoint();
     }
 
-    private Path getDefaultWorldRegionFolder() {
-        URL resourceUrl = getClass().getClassLoader().getResource("worlds/default/region");
+    private PathWithFileSystem getDefaultWorldRegionFolder() {
+        URL resourceUrl = getClass().getClassLoader().getResource("worlds/default");
         if (resourceUrl == null) {
             throw new IllegalStateException("Default world region folder not found!");
         }
         try {
-            return Paths.get(resourceUrl.toURI());
+            URI uri = resourceUrl.toURI();
+            if ("jar".equals(uri.getScheme())) {
+                FileSystem fileSystem = FileSystems.newFileSystem(uri, Collections.emptyMap());
+                return new PathWithFileSystem(fileSystem.getPath("worlds/default"), fileSystem);
+            } else {
+                return new PathWithFileSystem(Paths.get(uri), null);
+            }
         } catch (Exception e) {
             throw new RuntimeException("Failed to convert URL to Path", e);
         }
+    }
+
+    private YamlFile getConfig(String worldName) {
+        try {
+            Path dir = Path.of("worlds/" + worldName);
+            YamlFile yamlFile = new YamlFile(dir.resolve("minestom-world.yml").toString());
+            yamlFile.options().copyDefaults(true);
+            if (!yamlFile.exists()) {
+                yamlFile.createNewFile();
+            }
+            yamlFile.loadWithComments();
+            defaultValue(yamlFile, "spawn.x", 0.0D, "The x-coordinate of the spawnpoint");
+            defaultValue(yamlFile, "spawn.y", 41.0D, "The y-coordinate of the spawnpoint");
+            defaultValue(yamlFile, "spawn.z", 0.0D, "The z-coordinate of the spawnpoint");
+            defaultValue(yamlFile, "spawn.yaw", 0.0F, "The yaw of the spawnpoint");
+            defaultValue(yamlFile, "spawn.pitch", 0.0F, "The pitch of the spawnpoint");
+            yamlFile.save();
+            return yamlFile;
+        } catch (IOException e) {
+            Logger.error("Failed to load world configuration", e);
+        }
+        return null;
     }
 
     private Pos loadConfig(String worldName) {
