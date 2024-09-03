@@ -7,6 +7,7 @@ import eu.koboo.minestom.api.world.dimension.Dimension;
 import eu.koboo.minestom.api.world.manager.WorldManager;
 import eu.koboo.minestom.commands.CommandStop;
 import eu.koboo.minestom.commands.CommandVersion;
+import eu.koboo.minestom.commands.CommandWorld;
 import eu.koboo.minestom.config.ConfigLoader;
 import eu.koboo.minestom.console.Console;
 import eu.koboo.minestom.server.world.WorldManagerImpl;
@@ -24,10 +25,14 @@ import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.InstanceManager;
 import net.minestom.server.instance.anvil.AnvilLoader;
 import net.minestom.server.instance.block.Block;
+import net.minestom.server.permission.Permission;
 import net.minestom.server.world.DimensionType;
 import org.tinylog.Logger;
 
 import java.util.Arrays;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class ServerImpl extends Server {
@@ -65,6 +70,8 @@ public class ServerImpl extends Server {
         Logger.info("Initializing world manager..");
         worldManager = new WorldManagerImpl();
 
+
+
         Logger.info("Initializing server..");
         MinecraftServer minecraftServer = MinecraftServer.init();
 
@@ -74,6 +81,7 @@ public class ServerImpl extends Server {
         Logger.info("Registering commands..");
         MinecraftServer.getCommandManager().register(new CommandStop());
         MinecraftServer.getCommandManager().register(new CommandVersion());
+        MinecraftServer.getCommandManager().register(new CommandWorld());
 
         String host = serverConfig.host();
         int port = serverConfig.port();
@@ -136,6 +144,8 @@ public class ServerImpl extends Server {
         timeToStartInMillis = Math.round(timeToStartInMillis);
         timeToStartInMillis /= 100;
         Logger.info("Started in " + timeToStartInMillis + "s!");
+
+
     }
 
     @Override
@@ -172,8 +182,15 @@ public class ServerImpl extends Server {
         InstanceContainer instanceContainer = getDefaulWorld().getInstanceContainer();
         GlobalEventHandler eventHandler = MinecraftServer.getGlobalEventHandler();
         eventHandler.addListener(AsyncPlayerConfigurationEvent.class, event -> {
+            if (DEBUG) {
+                Logger.info("Player " + event.getPlayer().getUsername() + " is spawning in default world.");
+            }
+            event.getPlayer().addPermission(new Permission("command.world"));
             event.setSpawningInstance(instanceContainer);
             event.getPlayer().setRespawnPoint(new Pos(0, 41, 0));
+            if (DEBUG) {
+                Logger.info("Player " + event.getPlayer().getUsername() + " spawned in default world.");
+            }
         });
     }
 

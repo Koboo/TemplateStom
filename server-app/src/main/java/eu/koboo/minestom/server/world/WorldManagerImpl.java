@@ -20,10 +20,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.nio.file.*;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Getter
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
@@ -41,6 +38,11 @@ public class WorldManagerImpl implements WorldManager {
     @Override
     public World createWorld(String name, Dimension dimensionType) {
         long startTime = System.nanoTime();
+        if (loadedWorlds.containsKey(name)) {
+            if (ServerImpl.DEBUG) Logger.warn("World already exists; skipping creation");
+            return loadedWorlds.get(name);
+        }
+        if (ServerImpl.DEBUG) Logger.info("Creating world: " + name);
         World createdWorld = new World();
         Path dir = Path.of("worlds/" + name);
         try {
@@ -94,9 +96,15 @@ public class WorldManagerImpl implements WorldManager {
             } else {
                 YamlFile newConfig = getWorldConfigFile(name);
                 createdWorld.setWorldConfig(newConfig);
+                yamlFile = newConfig;
             }
             loadedWorlds.put(name, createdWorld);
             loadedInstances.put(name, createdInstance);
+            if (ServerImpl.DEBUG) Logger.info("World created: " + name + ". Dimension: " + dimensionType + ". Instance: " + createdInstance.getUniqueId() + ". Config: true");
+            if (ServerImpl.DEBUG) Logger.info("Setting spawn point for world: " + name);
+            if (ServerImpl.DEBUG && yamlFile == null) Logger.warn("yamlFile is null...? Why?");
+            Pos spawnPoint = new Pos(yamlFile.getDouble("spawn.x"), yamlFile.getDouble("spawn.y"), yamlFile.getDouble("spawn.z"), (float) yamlFile.getDouble("spawn.yaw"), (float) yamlFile.getDouble("spawn.pitch"));
+            createdWorld.setSpawnPoint(spawnPoint);
             double timeInMillis = (System.nanoTime() - startTime) / 1_000_000.0;
             Logger.info("World created in " + String.format("%.2fms", timeInMillis) + ": " + name);
             return createdWorld;
@@ -126,6 +134,10 @@ public class WorldManagerImpl implements WorldManager {
     public void deleteWorld(World world) {
         long startTime = System.nanoTime();
         String name = world.getName();
+        if (name.equals(DEFAULT_WORLD_NAME)) {
+            Logger.warn("Cannot delete default world. Aborting.");
+            return;
+        }
         World deletedWorld = loadedWorlds.get(name);
         if (deletedWorld == null) {
             return;
@@ -138,14 +150,34 @@ public class WorldManagerImpl implements WorldManager {
                 Logger.error("Failed to save world configuration", e);
             }
         }
+        unloadWorld(deletedWorld);
         Path dir = Path.of("worlds/" + name);
         if (Files.exists(dir, LinkOption.NOFOLLOW_LINKS)) {
             try {
+                List<File> directories = new ArrayList<>();
                 Files.walk(dir)
+                        .sorted(Comparator.reverseOrder())
                         .map(Path::toFile)
-                        .forEach(File::delete);
+                        .forEach(file -> {
+                            if (file.isDirectory()) {
+                                directories.add(file);
+                            } else {
+                                try {
+                                    Files.delete(file.toPath());
+                                } catch (IOException e) {
+                                    Logger.error("Failed to delete file", e);
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                for (File directory : directories) {
+                    if (!directory.delete()) {
+                        Logger.error("Failed to delete directory: " + directory);
+                    }
+                }
             } catch (IOException e) {
                 Logger.error("Failed to delete world directory", e);
+                e.printStackTrace();
                 return;
             }
         }
@@ -171,6 +203,10 @@ public class WorldManagerImpl implements WorldManager {
     public void unloadWorld(World world) {
         long startTime = System.nanoTime();
         String name = world.getName();
+        if (name.equals(DEFAULT_WORLD_NAME)) {
+            Logger.warn("Cannot unload default world. Aborting.");
+            return;
+        }
         Logger.info("Unloading world: " + name);
         World unloadedWorld = loadedWorlds.get(name);
         if (unloadedWorld == null) {
@@ -180,6 +216,7 @@ public class WorldManagerImpl implements WorldManager {
         InstanceContainer instance = unloadedWorld.getInstanceContainer();
         if (instance != null) {
             InstanceManager instanceManager = MinecraftServer.getInstanceManager();
+            instance.getPlayers().forEach(player -> player.setInstance(ServerImpl.getInstance().getDefaulWorld().getInstanceContainer(), ServerImpl.getInstance().getDefaulWorld().getSpawnPoint()));
             instance.saveChunksToStorage().thenAccept((v -> {
                 instanceManager.unregisterInstance(instance);
                 if (ServerImpl.DEBUG) Logger.info("Instance unregistered: " + name);
@@ -290,7 +327,7 @@ public class WorldManagerImpl implements WorldManager {
             }
             yamlFile.loadWithComments();
             defaultValue(yamlFile, "spawn.x", 0.0D, "The x-coordinate of the spawnpoint");
-            defaultValue(yamlFile, "spawn.y", 41.0D, "The y-coordinate of the spawnpoint");
+            defaultValue(yamlFile, "spawn.y", -61.0D, "The y-coordinate of the spawnpoint");
             defaultValue(yamlFile, "spawn.z", 0.0D, "The z-coordinate of the spawnpoint");
             defaultValue(yamlFile, "spawn.yaw", 0.0F, "The yaw of the spawnpoint");
             defaultValue(yamlFile, "spawn.pitch", 0.0F, "The pitch of the spawnpoint");
@@ -313,7 +350,7 @@ public class WorldManagerImpl implements WorldManager {
             yamlFile.loadWithComments();
 
             defaultValue(yamlFile, "spawn.x", 0.0D, "The x-coordinate of the spawnpoint");
-            defaultValue(yamlFile, "spawn.y", 41.0D, "The y-coordinate of the spawnpoint");
+            defaultValue(yamlFile, "spawn.y", -61.0D, "The y-coordinate of the spawnpoint");
             defaultValue(yamlFile, "spawn.z", 0.0D, "The z-coordinate of the spawnpoint");
             defaultValue(yamlFile, "spawn.yaw", 0.0F, "The yaw of the spawnpoint");
             defaultValue(yamlFile, "spawn.pitch", 0.0F, "The pitch of the spawnpoint");
