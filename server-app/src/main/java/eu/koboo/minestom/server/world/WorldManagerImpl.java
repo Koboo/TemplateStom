@@ -327,7 +327,7 @@ public class WorldManagerImpl implements WorldManager {
             }
             yamlFile.loadWithComments();
             defaultValue(yamlFile, "spawn.x", 0.0D, "The x-coordinate of the spawnpoint");
-            defaultValue(yamlFile, "spawn.y", 41.0D, "The y-coordinate of the spawnpoint");
+            defaultValue(yamlFile, "spawn.y", -61.0D, "The y-coordinate of the spawnpoint");
             defaultValue(yamlFile, "spawn.z", 0.0D, "The z-coordinate of the spawnpoint");
             defaultValue(yamlFile, "spawn.yaw", 0.0F, "The yaw of the spawnpoint");
             defaultValue(yamlFile, "spawn.pitch", 0.0F, "The pitch of the spawnpoint");
@@ -350,7 +350,7 @@ public class WorldManagerImpl implements WorldManager {
             yamlFile.loadWithComments();
 
             defaultValue(yamlFile, "spawn.x", 0.0D, "The x-coordinate of the spawnpoint");
-            defaultValue(yamlFile, "spawn.y", 41.0D, "The y-coordinate of the spawnpoint");
+            defaultValue(yamlFile, "spawn.y", -61.0D, "The y-coordinate of the spawnpoint");
             defaultValue(yamlFile, "spawn.z", 0.0D, "The z-coordinate of the spawnpoint");
             defaultValue(yamlFile, "spawn.yaw", 0.0F, "The yaw of the spawnpoint");
             defaultValue(yamlFile, "spawn.pitch", 0.0F, "The pitch of the spawnpoint");
