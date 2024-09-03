@@ -41,6 +41,11 @@ public class WorldManagerImpl implements WorldManager {
     @Override
     public World createWorld(String name, Dimension dimensionType) {
         long startTime = System.nanoTime();
+        if (loadedWorlds.containsKey(name)) {
+            if (ServerImpl.DEBUG) Logger.warn("World already exists; skipping creation");
+            return loadedWorlds.get(name);
+        }
+        if (ServerImpl.DEBUG) Logger.info("Creating world: " + name);
         World createdWorld = new World();
         Path dir = Path.of("worlds/" + name);
         try {
@@ -97,6 +102,11 @@ public class WorldManagerImpl implements WorldManager {
             }
             loadedWorlds.put(name, createdWorld);
             loadedInstances.put(name, createdInstance);
+            if (ServerImpl.DEBUG) Logger.info("World created: " + name + ". Dimension: " + dimensionType + ". Instance: " + createdInstance.getUniqueId() + ". Config: true");
+            if (ServerImpl.DEBUG) Logger.info("Setting spawn point for world: " + name);
+            if (ServerImpl.DEBUG && yamlFile == null) Logger.warn("yamlFile is null...? Why?");
+            Pos spawnPoint = new Pos(yamlFile.getDouble("spawn.x"), yamlFile.getDouble("spawn.y"), yamlFile.getDouble("spawn.z"), (float) yamlFile.getDouble("spawn.yaw"), (float) yamlFile.getDouble("spawn.pitch"));
+            createdWorld.setSpawnPoint(spawnPoint);
             double timeInMillis = (System.nanoTime() - startTime) / 1_000_000.0;
             Logger.info("World created in " + String.format("%.2fms", timeInMillis) + ": " + name);
             return createdWorld;

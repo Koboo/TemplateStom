@@ -9,6 +9,8 @@ import net.minestom.server.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.concurrent.CompletableFuture;
+
 public class CommandWorld extends Command {
 
     public CommandWorld() {
@@ -92,8 +94,13 @@ public class CommandWorld extends Command {
             });
             addSyntax((sender, context) -> {
                 String name = context.get("name");
-                Server.getInstance().getWorldManager().loadWorld(name);
-                sender.sendMessage("World " + name + " loaded.");
+                sender.sendMessage("Loading world " + name + "...");
+                CompletableFuture.supplyAsync(() -> {
+                    Server.getInstance().getWorldManager().loadWorld(name);
+                    return null;
+                }).thenAccept((result) -> {
+                    sender.sendMessage("World " + name + " loaded.");
+                });
             }, ArgumentType.String("name"));
         }
     }
@@ -112,8 +119,13 @@ public class CommandWorld extends Command {
                     sender.sendMessage("World with name " + name + " does not exist.");
                     return;
                 }
-                Server.getInstance().getWorldManager().unloadWorld(world);
-                sender.sendMessage("World " + world.getName() + " unloaded.");
+                sender.sendMessage("Unloading world " + world.getName() + "...");
+                CompletableFuture.supplyAsync(() -> {
+                    Server.getInstance().getWorldManager().unloadWorld(world);
+                    return null;
+                }).thenAccept((result) -> {
+                    sender.sendMessage("World " + world.getName() + " unloaded.");
+                });
             }, ArgumentType.String("name"));
         }
     }
@@ -127,8 +139,13 @@ public class CommandWorld extends Command {
             });
             addSyntax((sender, context) -> {
                 String name = context.get("name");
-                Server.getInstance().getWorldManager().saveWorld(name);
-                sender.sendMessage("World " + name + " saved.");
+                sender.sendMessage("Saving world " + name + "...");
+                CompletableFuture.supplyAsync(() -> {
+                    Server.getInstance().getWorldManager().saveWorld(name);
+                    return null;
+                }).thenAccept((result) -> {
+                    sender.sendMessage("World " + name + " saved.");
+                });
             }, ArgumentType.String("name"));
         }
     }
@@ -138,8 +155,13 @@ public class CommandWorld extends Command {
         public CommandWorldSaveAll() {
             super("save-all");
             setDefaultExecutor((sender, context) -> {
-                Server.getInstance().getWorldManager().saveAllWorlds();
-                sender.sendMessage("All worlds saved.");
+                sender.sendMessage("Saving all worlds. This may take a while..");
+                CompletableFuture.supplyAsync(() -> {
+                    Server.getInstance().getWorldManager().saveAllWorlds();
+                    return null;
+                }).thenAccept((result) -> {
+                    sender.sendMessage("All worlds saved.");
+                });
             });
         }
     }
@@ -160,6 +182,10 @@ public class CommandWorld extends Command {
                 }
                 if (!(sender instanceof Player)) {
                     sender.sendMessage("Only players can use this command.");
+                    return;
+                }
+                if (world.getInstanceContainer() == null) {
+                    sender.sendMessage("World " + world.getName() + " is loaded, but the instance is null. Aborting.");
                     return;
                 }
                 if (((Player) sender).getInstance().getUniqueId() == world.getInstanceContainer().getUniqueId()) {
