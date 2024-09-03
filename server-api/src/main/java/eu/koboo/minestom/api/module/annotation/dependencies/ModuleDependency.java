@@ -1,4 +1,4 @@
-package eu.koboo.minestom.api.module.dependencies;
+package eu.koboo.minestom.api.module.annotation.dependencies;
 
 public @interface ModuleDependency {
 

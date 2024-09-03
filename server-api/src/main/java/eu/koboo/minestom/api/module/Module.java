@@ -1,17 +1,25 @@
 package eu.koboo.minestom.api.module;
 
-import eu.koboo.minestom.api.module.dependencies.ModuleDependency;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
-public @interface Module {
+@Getter
+@Setter
+@FieldDefaults(level = AccessLevel.PUBLIC)
+public abstract class Module {
 
-    String name();
+    private boolean isEnabled = false;
 
-    String version() default "1.0.0";
+    public abstract void onEnable();
 
-    String[] authors();
+    public abstract void onDisable();
 
-    String description() default "";
+    public boolean isEnabled() {
+        return isEnabled;
+    }
 
-    ModuleDependency[] moduleDependencies() default {};
+
 
 }
