@@ -265,11 +265,6 @@ public class WorldManagerImpl implements WorldManager {
         if (ServerImpl.DEBUG) Logger.info("Saved all worlds in " + String.format("%.2fms", timeInMillis));
     }
 
-    @Override
-    public Pos getSpawnPoint(World world) {
-        return world.getSpawnPoint();
-    }
-
     private PathWithFileSystem getDefaultWorldRegionFolder() {
         URL resourceUrl = getClass().getClassLoader().getResource("worlds/default");
         if (resourceUrl == null) {

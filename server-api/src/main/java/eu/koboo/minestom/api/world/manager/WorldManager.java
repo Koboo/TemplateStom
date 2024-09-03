@@ -23,6 +23,4 @@ public interface WorldManager {
 
     void saveAllWorlds();
 
-    Pos getSpawnPoint(World world);
-
 }
