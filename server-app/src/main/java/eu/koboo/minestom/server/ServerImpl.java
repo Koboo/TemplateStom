@@ -2,11 +2,17 @@ package eu.koboo.minestom.server;
 
 import eu.koboo.minestom.api.config.ServerConfig;
 import eu.koboo.minestom.api.server.Server;
+import eu.koboo.minestom.api.world.World;
+import eu.koboo.minestom.api.world.dimension.Dimension;
+import eu.koboo.minestom.api.world.manager.WorldManager;
 import eu.koboo.minestom.commands.CommandStop;
 import eu.koboo.minestom.commands.CommandVersion;
 import eu.koboo.minestom.config.ConfigLoader;
 import eu.koboo.minestom.console.Console;
+import eu.koboo.minestom.server.world.WorldManagerImpl;
 import lombok.Getter;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.event.GlobalEventHandler;
@@ -16,20 +22,36 @@ import net.minestom.server.extras.bungee.BungeeCordProxy;
 import net.minestom.server.extras.velocity.VelocityProxy;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.InstanceManager;
+import net.minestom.server.instance.anvil.AnvilLoader;
 import net.minestom.server.instance.block.Block;
+import net.minestom.server.world.DimensionType;
 import org.tinylog.Logger;
 
+import java.util.Arrays;
+
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class ServerImpl extends Server {
 
-    @Getter
-    private static ServerImpl instance;
-
-    private final ServerConfig serverConfig;
+    public static boolean DEBUG = false;
 
     @Getter
-    private final Console console;
+    @NonFinal
+    static ServerImpl instance;
 
-    public ServerImpl() {
+    ServerConfig serverConfig;
+
+    WorldManagerImpl worldManager;
+
+    @Getter
+    Console console;
+
+    public ServerImpl(String[] args) {
+        super(args);
+
+        if (Arrays.stream(args).anyMatch(s -> s.equalsIgnoreCase("--debug"))) {
+            Logger.info("Debug mode enabled!");
+            DEBUG = true;
+        }
         long startTime = System.nanoTime();
 
         instance = this;
@@ -40,6 +62,9 @@ public class ServerImpl extends Server {
         Logger.info("Initializing console..");
         console = new Console();
 
+        Logger.info("Initializing world manager..");
+        worldManager = new WorldManagerImpl();
+
         Logger.info("Initializing server..");
         MinecraftServer minecraftServer = MinecraftServer.init();
 
@@ -49,26 +74,6 @@ public class ServerImpl extends Server {
         Logger.info("Registering commands..");
         MinecraftServer.getCommandManager().register(new CommandStop());
         MinecraftServer.getCommandManager().register(new CommandVersion());
-
-        Logger.info("Creating instance..");
-        InstanceManager instanceManager = MinecraftServer.getInstanceManager();
-        InstanceContainer instanceContainer = instanceManager.createInstanceContainer();
-
-        instanceContainer.setGenerator(unit -> {
-            unit.modifier().fillHeight(0, 36, Block.STONE);
-            unit.modifier().fillHeight(37, 39, Block.DIRT);
-            for (int x = 0; x < 16; x++) {
-                for (int z = 0; z < 16; z++) {
-                    unit.modifier().setBlock(x, 40, z, Block.GRASS_BLOCK);
-                }
-            }
-        });
-
-        GlobalEventHandler eventHandler = MinecraftServer.getGlobalEventHandler();
-        eventHandler.addListener(AsyncPlayerConfigurationEvent.class, event -> {
-            event.setSpawningInstance(instanceContainer);
-            event.getPlayer().setRespawnPoint(new Pos(0, 41, 0));
-        });
 
         String host = serverConfig.host();
         int port = serverConfig.port();
@@ -87,7 +92,12 @@ public class ServerImpl extends Server {
                     MojangAuth.init();
                     Logger.info("ProxyMode 'NONE', enabled MojangAuth.");
                 } else {
-                    Logger.info("ProxyMode 'NONE', without MojangAuth.");
+                    if (Arrays.stream(args).noneMatch(s -> s.equalsIgnoreCase("--cracked"))) {
+                        Logger.warn("ProxyMode 'NONE', without MojangAuth.");
+                        Logger.warn("WARNING: This is not recommended, as it allows cracked clients to join!");
+                        Logger.warn("WARNING: Please enable MojangAuth or use a proxy, unless you know what you are doing!");
+                        Logger.warn("To disable this warning, start the server with --cracked");
+                    }
                 }
             }
             case VELOCITY -> {
@@ -106,10 +116,20 @@ public class ServerImpl extends Server {
         }
         Logger.info("Starting @ " + host + ":" + port);
 
+        setupDefaultWorld();
+
+        Logger.info("Loading worlds..");
+        worldManager.loadAllAvailableWorlds();
+
         minecraftServer.start(host, port);
         Logger.info("Listening on " + host + ":" + port);
 
         console.start();
+
+        MinecraftServer.getSchedulerManager().buildShutdownTask(buildShutdownTask());
+        if (DEBUG) {
+            Logger.info("Shutdown task built. Registered shutdown task.");
+        }
 
         double timeToStartInMillis = (double) (System.nanoTime() - startTime) / 1000000000;
         timeToStartInMillis *= 100;
@@ -136,6 +156,35 @@ public class ServerImpl extends Server {
     @Override
     public String getMinestomVersion() {
         return ProjectVariables.MINESTOM_VERSION;
+    }
+
+    @Override
+    public WorldManager getWorldManager() {
+        return worldManager;
+    }
+
+    @Override
+    public World getDefaulWorld() {
+        return worldManager.createWorld(WorldManagerImpl.DEFAULT_WORLD_NAME, Dimension.OVERWORLD);
+    }
+
+    private void setupDefaultWorld() {
+        InstanceContainer instanceContainer = getDefaulWorld().getInstanceContainer();
+        GlobalEventHandler eventHandler = MinecraftServer.getGlobalEventHandler();
+        eventHandler.addListener(AsyncPlayerConfigurationEvent.class, event -> {
+            event.setSpawningInstance(instanceContainer);
+            event.getPlayer().setRespawnPoint(new Pos(0, 41, 0));
+        });
+    }
+
+    private Runnable buildShutdownTask() {
+        return () -> {
+            long startTime = System.nanoTime();
+            Logger.info("Saving worlds. This may take a while..");
+            worldManager.saveAllWorlds();
+            Logger.info("Saved all worlds in " + String.format("%.2f", (System.nanoTime() - startTime) / 1_000_000_000.0) + "s");
+            Logger.info("Shutting down..");
+        };
     }
 
     private void setViewDistance(String key, int value) {

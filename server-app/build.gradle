@@ -12,7 +12,7 @@ compileJava {
     sourceCompatibility = JavaVersion.VERSION_21
 }
 
-mainClassName = 'eu.koboo.minestom.Launch'
+mainClassName = 'eu.koboo.minestom.Launcher'
 
 dependencies {
     compileOnly "net.minestom:minestom-snapshots:${minestomVersion}"

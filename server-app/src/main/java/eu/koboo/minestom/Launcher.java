@@ -8,7 +8,7 @@ public class Launcher {
     public static void main(String[] args) {
         try {
             AnsiConsole.systemInstall();
-            new ServerImpl();
+            new ServerImpl(args);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);

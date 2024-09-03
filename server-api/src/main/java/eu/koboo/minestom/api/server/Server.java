@@ -1,7 +1,10 @@
 package eu.koboo.minestom.api.server;
 
 import eu.koboo.minestom.api.config.ServerConfig;
+import eu.koboo.minestom.api.world.World;
+import eu.koboo.minestom.api.world.manager.WorldManager;
 import lombok.Getter;
+import lombok.NonNull;
 
 /**
  * Abstract class to represent the actual implementation of the server
@@ -9,9 +12,10 @@ import lombok.Getter;
 public abstract class Server {
 
     @Getter
+    @NonNull
     private static Server instance;
 
-    public Server() {
+    public Server(String[] args) {
         instance = this;
     }
 
@@ -20,6 +24,7 @@ public abstract class Server {
      *
      * @return The loaded ServerConfig object
      */
+    @NonNull
     public abstract ServerConfig getServerConfig();
 
     /**
@@ -27,6 +32,7 @@ public abstract class Server {
      *
      * @return The project/server name
      */
+    @NonNull
     public abstract String getName();
 
     /**
@@ -35,6 +41,7 @@ public abstract class Server {
      *
      * @return The project/server version
      */
+    @NonNull
     public abstract String getVersion();
 
     /**
@@ -42,6 +49,23 @@ public abstract class Server {
      *
      * @return The used Minestom version
      */
+    @NonNull
     public abstract String getMinestomVersion();
+
+    /**
+     * Get the world manager instance
+     *
+     * @return The world manager instance
+     */
+    @NonNull
+    public abstract WorldManager getWorldManager();
+
+    /**
+     * Get the default world
+     *
+     * @return The default world
+     */
+    @NonNull
+    public abstract World getDefaulWorld();
 
 }
