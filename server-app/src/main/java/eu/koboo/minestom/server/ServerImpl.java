@@ -69,6 +69,8 @@ public class ServerImpl extends Server {
         Logger.info("Initializing world manager..");
         worldManager = new WorldManagerImpl();
 
+
+
         Logger.info("Initializing server..");
         MinecraftServer minecraftServer = MinecraftServer.init();
 
@@ -179,8 +181,14 @@ public class ServerImpl extends Server {
         InstanceContainer instanceContainer = getDefaulWorld().getInstanceContainer();
         GlobalEventHandler eventHandler = MinecraftServer.getGlobalEventHandler();
         eventHandler.addListener(AsyncPlayerConfigurationEvent.class, event -> {
+            if (DEBUG) {
+                Logger.info("Player " + event.getPlayer().getUsername() + " is spawning in default world.");
+            }
             event.setSpawningInstance(instanceContainer);
             event.getPlayer().setRespawnPoint(new Pos(0, 41, 0));
+            if (DEBUG) {
+                Logger.info("Player " + event.getPlayer().getUsername() + " spawned in default world.");
+            }
         });
     }
 
