@@ -28,6 +28,9 @@ import net.minestom.server.world.DimensionType;
 import org.tinylog.Logger;
 
 import java.util.Arrays;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class ServerImpl extends Server {
@@ -136,6 +139,8 @@ public class ServerImpl extends Server {
         timeToStartInMillis = Math.round(timeToStartInMillis);
         timeToStartInMillis /= 100;
         Logger.info("Started in " + timeToStartInMillis + "s!");
+
+
     }
 
     @Override
