@@ -162,7 +162,7 @@ public class CommandWorld extends Command {
                     sender.sendMessage("Only players can use this command.");
                     return;
                 }
-                ((Player) sender).teleport(world.getSpawnPoint());
+                ((Player) sender).setInstance(world.getInstanceContainer(), world.getSpawnPoint());
                 sender.sendMessage("Teleported to world " + world.getName() + "'s spawn.");
             }, ArgumentType.String("name"));
         }
