@@ -7,6 +7,7 @@ import eu.koboo.minestom.api.world.dimension.Dimension;
 import eu.koboo.minestom.api.world.manager.WorldManager;
 import eu.koboo.minestom.commands.CommandStop;
 import eu.koboo.minestom.commands.CommandVersion;
+import eu.koboo.minestom.commands.CommandWorld;
 import eu.koboo.minestom.config.ConfigLoader;
 import eu.koboo.minestom.console.Console;
 import eu.koboo.minestom.server.world.WorldManagerImpl;
@@ -77,6 +78,7 @@ public class ServerImpl extends Server {
         Logger.info("Registering commands..");
         MinecraftServer.getCommandManager().register(new CommandStop());
         MinecraftServer.getCommandManager().register(new CommandVersion());
+        MinecraftServer.getCommandManager().register(new CommandWorld());
 
         String host = serverConfig.host();
         int port = serverConfig.port();
