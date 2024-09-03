@@ -20,10 +20,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.nio.file.*;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Getter
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
@@ -99,6 +96,7 @@ public class WorldManagerImpl implements WorldManager {
             } else {
                 YamlFile newConfig = getWorldConfigFile(name);
                 createdWorld.setWorldConfig(newConfig);
+                yamlFile = newConfig;
             }
             loadedWorlds.put(name, createdWorld);
             loadedInstances.put(name, createdInstance);
@@ -136,6 +134,10 @@ public class WorldManagerImpl implements WorldManager {
     public void deleteWorld(World world) {
         long startTime = System.nanoTime();
         String name = world.getName();
+        if (name.equals(DEFAULT_WORLD_NAME)) {
+            Logger.warn("Cannot delete default world. Aborting.");
+            return;
+        }
         World deletedWorld = loadedWorlds.get(name);
         if (deletedWorld == null) {
             return;
@@ -148,14 +150,34 @@ public class WorldManagerImpl implements WorldManager {
                 Logger.error("Failed to save world configuration", e);
             }
         }
+        unloadWorld(deletedWorld);
         Path dir = Path.of("worlds/" + name);
         if (Files.exists(dir, LinkOption.NOFOLLOW_LINKS)) {
             try {
+                List<File> directories = new ArrayList<>();
                 Files.walk(dir)
+                        .sorted(Comparator.reverseOrder())
                         .map(Path::toFile)
-                        .forEach(File::delete);
+                        .forEach(file -> {
+                            if (file.isDirectory()) {
+                                directories.add(file);
+                            } else {
+                                try {
+                                    Files.delete(file.toPath());
+                                } catch (IOException e) {
+                                    Logger.error("Failed to delete file", e);
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                for (File directory : directories) {
+                    if (!directory.delete()) {
+                        Logger.error("Failed to delete directory: " + directory);
+                    }
+                }
             } catch (IOException e) {
                 Logger.error("Failed to delete world directory", e);
+                e.printStackTrace();
                 return;
             }
         }
@@ -181,6 +203,10 @@ public class WorldManagerImpl implements WorldManager {
     public void unloadWorld(World world) {
         long startTime = System.nanoTime();
         String name = world.getName();
+        if (name.equals(DEFAULT_WORLD_NAME)) {
+            Logger.warn("Cannot unload default world. Aborting.");
+            return;
+        }
         Logger.info("Unloading world: " + name);
         World unloadedWorld = loadedWorlds.get(name);
         if (unloadedWorld == null) {
@@ -190,6 +216,7 @@ public class WorldManagerImpl implements WorldManager {
         InstanceContainer instance = unloadedWorld.getInstanceContainer();
         if (instance != null) {
             InstanceManager instanceManager = MinecraftServer.getInstanceManager();
+            instance.getPlayers().forEach(player -> player.setInstance(ServerImpl.getInstance().getDefaulWorld().getInstanceContainer(), ServerImpl.getInstance().getDefaulWorld().getSpawnPoint()));
             instance.saveChunksToStorage().thenAccept((v -> {
                 instanceManager.unregisterInstance(instance);
                 if (ServerImpl.DEBUG) Logger.info("Instance unregistered: " + name);
