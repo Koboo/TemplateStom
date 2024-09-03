@@ -25,6 +25,7 @@ import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.InstanceManager;
 import net.minestom.server.instance.anvil.AnvilLoader;
 import net.minestom.server.instance.block.Block;
+import net.minestom.server.permission.Permission;
 import net.minestom.server.world.DimensionType;
 import org.tinylog.Logger;
 
@@ -184,6 +185,7 @@ public class ServerImpl extends Server {
             if (DEBUG) {
                 Logger.info("Player " + event.getPlayer().getUsername() + " is spawning in default world.");
             }
+            event.getPlayer().addPermission(new Permission("command.world"));
             event.setSpawningInstance(instanceContainer);
             event.getPlayer().setRespawnPoint(new Pos(0, 41, 0));
             if (DEBUG) {
