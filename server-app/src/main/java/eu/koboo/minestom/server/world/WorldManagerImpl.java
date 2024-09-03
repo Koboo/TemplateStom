@@ -231,11 +231,11 @@ public class WorldManagerImpl implements WorldManager {
     public void saveWorld(String name) {
         long startTime = System.nanoTime();
         World world = loadedWorlds.get(name);
-        YamlFile yamlFile = world.getWorldConfig();
         if (world == null) {
             Logger.warn("World not loaded; skipping save");
             return;
         }
+        YamlFile yamlFile = world.getWorldConfig();
         if (yamlFile != null) {
             try {
                 yamlFile.save();
@@ -256,10 +256,13 @@ public class WorldManagerImpl implements WorldManager {
 
     @Override
     public void saveAllWorlds() {
-        Logger.info("Saving all worlds. This may take a while..");
+        if (ServerImpl.DEBUG) Logger.info("Saving all worlds. This may take a while. Be aware that this is an synchronous operation.");
+        long startTime = System.nanoTime();
         for (World world : loadedWorlds.values()) {
             saveWorld(world.getName());
         }
+        double timeInMillis = (System.nanoTime() - startTime) / 1_000_000.0;
+        if (ServerImpl.DEBUG) Logger.info("Saved all worlds in " + String.format("%.2fms", timeInMillis));
     }
 
     @Override
