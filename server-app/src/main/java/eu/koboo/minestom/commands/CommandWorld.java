@@ -27,7 +27,7 @@ public class CommandWorld extends Command {
             sender.sendMessage("Use /world save-all to save all worlds.");
             sender.sendMessage("Use /world go <name> to teleport to a world.");
             sender.sendMessage("Use /world config <name> to view the world configuration.");
-            sender.sendMessage("Use /world config <name> <key> <value> to set the world configuration.");
+            sender.sendMessage("Use /world configure <name> <key> <value> to set the world configuration.");
         });
 
         addSubcommand(new CommandWorldCreate());
@@ -45,7 +45,7 @@ public class CommandWorld extends Command {
     private static class CommandWorldCreate extends Command {
 
         public CommandWorldCreate() {
-            super("create", "c");
+            super("create");
             setDefaultExecutor((sender, context) -> {
                 sender.sendMessage("Usage: /world create <name> <dimension>");
             });
@@ -66,7 +66,7 @@ public class CommandWorld extends Command {
     private static class CommandWorldDelete extends Command {
 
         public CommandWorldDelete() {
-            super("delete", "d");
+            super("delete");
             setDefaultExecutor((sender, context) -> {
                 sender.sendMessage("Usage: /world delete <name>");
             });
@@ -86,7 +86,7 @@ public class CommandWorld extends Command {
     private static class CommandWorldLoad extends Command {
 
         public CommandWorldLoad() {
-            super("load", "l");
+            super("load");
             setDefaultExecutor((sender, context) -> {
                 sender.sendMessage("Usage: /world load <name>");
             });
@@ -101,7 +101,7 @@ public class CommandWorld extends Command {
     private static class CommandWorldUnload extends Command {
 
         public CommandWorldUnload() {
-            super("unload", "u");
+            super("unload");
             setDefaultExecutor((sender, context) -> {
                 sender.sendMessage("Usage: /world unload <name>");
             });
@@ -121,7 +121,7 @@ public class CommandWorld extends Command {
     private static class CommandWorldSave extends Command {
 
         public CommandWorldSave() {
-            super("save", "s");
+            super("save");
             setDefaultExecutor((sender, context) -> {
                 sender.sendMessage("Usage: /world save <name>");
             });
@@ -136,7 +136,7 @@ public class CommandWorld extends Command {
     private static class CommandWorldSaveAll extends Command {
 
         public CommandWorldSaveAll() {
-            super("save-all", "sa");
+            super("save-all");
             setDefaultExecutor((sender, context) -> {
                 Server.getInstance().getWorldManager().saveAllWorlds();
                 sender.sendMessage("All worlds saved.");
@@ -147,7 +147,7 @@ public class CommandWorld extends Command {
     private static class CommandWorldGo extends Command {
 
         public CommandWorldGo() {
-            super("go", "g");
+            super("go");
             setDefaultExecutor((sender, context) -> {
                 sender.sendMessage("Usage: /world go <name>");
             });
@@ -162,6 +162,10 @@ public class CommandWorld extends Command {
                     sender.sendMessage("Only players can use this command.");
                     return;
                 }
+                if (((Player) sender).getInstance().getUniqueId() == world.getInstanceContainer().getUniqueId()) {
+                    sender.sendMessage("Already in world " + world.getName() + ". Aborting.");
+                    return;
+                }
                 ((Player) sender).setInstance(world.getInstanceContainer(), world.getSpawnPoint());
                 sender.sendMessage("Teleported to world " + world.getName() + "'s spawn.");
             }, ArgumentType.String("name"));
@@ -171,7 +175,7 @@ public class CommandWorld extends Command {
     private static class CommandWorldConfig extends Command {
 
         public CommandWorldConfig() {
-            super("config", "cfg");
+            super("config");
             setDefaultExecutor((sender, context) -> {
                 sender.sendMessage("Usage: /world config <name>");
             });
@@ -193,7 +197,7 @@ public class CommandWorld extends Command {
     private static class CommandWorldConfigChange extends Command {
 
         public CommandWorldConfigChange() {
-            super("config", "cfg");
+            super("configure");
             setDefaultExecutor((sender, context) -> {
                 sender.sendMessage("Usage: /world config <name> <key> <value>");
             });
