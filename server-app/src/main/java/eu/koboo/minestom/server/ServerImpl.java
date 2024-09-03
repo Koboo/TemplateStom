@@ -126,6 +126,11 @@ public class ServerImpl extends Server {
 
         console.start();
 
+        MinecraftServer.getSchedulerManager().buildShutdownTask(buildShutdownTask());
+        if (DEBUG) {
+            Logger.info("Shutdown task built. Registered shutdown task.");
+        }
+
         double timeToStartInMillis = (double) (System.nanoTime() - startTime) / 1000000000;
         timeToStartInMillis *= 100;
         timeToStartInMillis = Math.round(timeToStartInMillis);
@@ -170,6 +175,16 @@ public class ServerImpl extends Server {
             event.setSpawningInstance(instanceContainer);
             event.getPlayer().setRespawnPoint(new Pos(0, 41, 0));
         });
+    }
+
+    private Runnable buildShutdownTask() {
+        return () -> {
+            long startTime = System.nanoTime();
+            Logger.info("Saving worlds. This may take a while..");
+            worldManager.saveAllWorlds();
+            Logger.info("Saved all worlds in " + String.format("%.2f", (System.nanoTime() - startTime) / 1_000_000_000.0) + "s");
+            Logger.info("Shutting down..");
+        };
     }
 
     private void setViewDistance(String key, int value) {

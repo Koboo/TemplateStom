@@ -31,7 +31,6 @@ public class WorldManagerImpl implements WorldManager {
 
     Map<String, World> loadedWorlds;
     Map<String, InstanceContainer> loadedInstances;
-
     public static final String DEFAULT_WORLD_NAME = "world";
 
     public WorldManagerImpl() {
@@ -90,7 +89,7 @@ public class WorldManagerImpl implements WorldManager {
                     yamlFile.save();
                     createdWorld.setWorldConfig(yamlFile);
                 } catch (IOException e) {
-                    Logger.error("Failed to save world configuration", e);
+                    if (ServerImpl.DEBUG) Logger.error("Failed to save world configuration", e);
                 }
             } else {
                 YamlFile newConfig = getConfig(name);
