@@ -4,6 +4,7 @@ import eu.koboo.minestom.api.world.World;
 import eu.koboo.minestom.api.world.dimension.Dimension;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.world.DimensionType;
+import org.simpleyaml.configuration.file.YamlFile;
 
 public interface WorldManager {
 
@@ -22,5 +23,7 @@ public interface WorldManager {
     void saveWorld(String name);
 
     void saveAllWorlds();
+
+    YamlFile getWorldConfigFile(String worldName);
 
 }

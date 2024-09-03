@@ -92,7 +92,7 @@ public class WorldManagerImpl implements WorldManager {
                     if (ServerImpl.DEBUG) Logger.error("Failed to save world configuration", e);
                 }
             } else {
-                YamlFile newConfig = getConfig(name);
+                YamlFile newConfig = getWorldConfigFile(name);
                 createdWorld.setWorldConfig(newConfig);
             }
             loadedWorlds.put(name, createdWorld);
@@ -171,23 +171,19 @@ public class WorldManagerImpl implements WorldManager {
     public void unloadWorld(World world) {
         long startTime = System.nanoTime();
         String name = world.getName();
+        Logger.info("Unloading world: " + name);
         World unloadedWorld = loadedWorlds.get(name);
         if (unloadedWorld == null) {
+            Logger.warn("World not loaded; skipping unload");
             return;
         }
-        YamlFile yamlFile = unloadedWorld.getWorldConfig();
-        if (yamlFile != null) {
-            try {
-                yamlFile.save();
-            } catch (IOException e) {
-                Logger.error("Failed to save world configuration", e);
-            }
-        }
-        Logger.info("Unloading world: " + name);
         InstanceContainer instance = unloadedWorld.getInstanceContainer();
         if (instance != null) {
             InstanceManager instanceManager = MinecraftServer.getInstanceManager();
-            instanceManager.unregisterInstance(instance);
+            instance.saveChunksToStorage().thenAccept((v -> {
+                instanceManager.unregisterInstance(instance);
+                if (ServerImpl.DEBUG) Logger.info("Instance unregistered: " + name);
+            }));
         }
         loadedWorlds.remove(name);
         loadedInstances.remove(name);
@@ -216,7 +212,7 @@ public class WorldManagerImpl implements WorldManager {
             Pos spawnPoint = loadConfig(name);
 
             loadedWorld.setSpawnPoint(spawnPoint);
-            loadedWorld.setWorldConfig(getConfig(name));
+            loadedWorld.setWorldConfig(getWorldConfigFile(name));
 
             loadedWorlds.put(name, loadedWorld);
             loadedInstances.put(name, instance);
@@ -245,7 +241,7 @@ public class WorldManagerImpl implements WorldManager {
         }
         InstanceContainer instance = world.getInstanceContainer();
         if (instance != null) {
-            instance.saveInstance().thenAccept(success -> {
+            instance.saveChunksToStorage().thenAccept(success -> {
                 double timeInMillis = (System.nanoTime() - startTime) / 1_000_000.0;
                 Logger.info("World saved in " + String.format("%.2fms", timeInMillis) + ": " + name);
             });
@@ -283,7 +279,8 @@ public class WorldManagerImpl implements WorldManager {
         }
     }
 
-    private YamlFile getConfig(String worldName) {
+    @Override
+    public YamlFile getWorldConfigFile(String worldName) {
         try {
             Path dir = Path.of("worlds/" + worldName);
             YamlFile yamlFile = new YamlFile(dir.resolve("minestom-world.yml").toString());
