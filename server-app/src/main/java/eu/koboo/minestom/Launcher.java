@@ -1,5 +1,6 @@
 package eu.koboo.minestom;
 
+import eu.koboo.minestom.server.ExitCode;
 import eu.koboo.minestom.server.ServerImpl;
 import org.fusesource.jansi.AnsiConsole;
 
@@ -11,7 +12,7 @@ public class Launcher {
             new ServerImpl();
         } catch (Exception e) {
             e.printStackTrace();
-            System.exit(1);
+            System.exit(ExitCode.EXCEPTION);
         }
     }
 

@@ -5,8 +5,9 @@ import eu.koboo.minestom.api.server.Server;
 import eu.koboo.minestom.commands.CommandStop;
 import eu.koboo.minestom.commands.CommandVersion;
 import eu.koboo.minestom.config.ConfigLoader;
-import eu.koboo.minestom.console.Console;
+import eu.koboo.minestom.console.JLineConsole;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.event.GlobalEventHandler;
@@ -17,8 +18,8 @@ import net.minestom.server.extras.velocity.VelocityProxy;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.InstanceManager;
 import net.minestom.server.instance.block.Block;
-import org.tinylog.Logger;
 
+@Slf4j
 public class ServerImpl extends Server {
 
     @Getter
@@ -27,30 +28,30 @@ public class ServerImpl extends Server {
     private final ServerConfig serverConfig;
 
     @Getter
-    private final Console console;
+    private final JLineConsole console;
 
     public ServerImpl() {
         long startTime = System.nanoTime();
 
         instance = this;
 
-        Logger.info("Loading settings..");
+        log.info("Loading settings..");
         serverConfig = ConfigLoader.loadConfig();
 
-        Logger.info("Initializing console..");
-        console = new Console();
+        log.info("Initializing console..");
+        console = new JLineConsole();
 
-        Logger.info("Initializing server..");
+        log.info("Initializing server..");
         MinecraftServer minecraftServer = MinecraftServer.init();
 
         MinecraftServer.getExceptionManager()
-                .setExceptionHandler(exc -> Logger.error("An unexpected error occurred! ", exc));
+                .setExceptionHandler(exc -> log.error("An unexpected error occurred! ", exc));
 
-        Logger.info("Registering commands..");
+        log.info("Registering commands..");
         MinecraftServer.getCommandManager().register(new CommandStop());
         MinecraftServer.getCommandManager().register(new CommandVersion());
 
-        Logger.info("Creating instance..");
+        log.info("Creating instance..");
         InstanceManager instanceManager = MinecraftServer.getInstanceManager();
         InstanceContainer instanceContainer = instanceManager.createInstanceContainer();
 
@@ -85,37 +86,37 @@ public class ServerImpl extends Server {
             case NONE -> {
                 if (serverConfig.onlineMode()) {
                     MojangAuth.init();
-                    Logger.info("ProxyMode 'NONE', enabled MojangAuth.");
+                    log.info("ProxyMode 'NONE', enabled MojangAuth.");
                 } else {
-                    Logger.info("ProxyMode 'NONE', without MojangAuth.");
+                    log.info("ProxyMode 'NONE', without MojangAuth.");
                 }
             }
             case VELOCITY -> {
                 if (serverConfig.velocitySecret() == null || serverConfig.velocitySecret().equalsIgnoreCase("")) {
-                    Logger.warn("ProxyMode 'VELOCITY' selected, but no proxy-secret set! Abort!");
+                    log.warn("ProxyMode 'VELOCITY' selected, but no proxy-secret set! Abort!");
                     System.exit(0);
                     break;
                 }
                 VelocityProxy.enable(serverConfig.velocitySecret());
-                Logger.info("ProxyMode 'VELOCITY', enabled VelocityProxy.");
+                log.info("ProxyMode 'VELOCITY', enabled VelocityProxy.");
             }
             case BUNGEECORD -> {
                 BungeeCordProxy.enable();
-                Logger.info("ProxyMode 'BUNGEECORD', enabled BungeeCordProxy.");
+                log.info("ProxyMode 'BUNGEECORD', enabled BungeeCordProxy.");
             }
         }
-        Logger.info("Starting @ " + host + ":" + port);
+        log.info("Starting @ {}:{}", host, port);
 
         minecraftServer.start(host, port);
-        Logger.info("Listening on " + host + ":" + port);
+        log.info("Listening on {}:{}", host, port);
 
         console.start();
 
-        double timeToStartInMillis = (double) (System.nanoTime() - startTime) / 1000000000;
-        timeToStartInMillis *= 100;
-        timeToStartInMillis = Math.round(timeToStartInMillis);
-        timeToStartInMillis /= 100;
-        Logger.info("Started in " + timeToStartInMillis + "s!");
+        double timeToStartInSeconds = (double) (System.nanoTime() - startTime) / 1000000000;
+        timeToStartInSeconds *= 100;
+        timeToStartInSeconds = Math.round(timeToStartInSeconds);
+        timeToStartInSeconds /= 100;
+        log.info("Started in {}s!", timeToStartInSeconds);
     }
 
     @Override
@@ -125,17 +126,17 @@ public class ServerImpl extends Server {
 
     @Override
     public String getName() {
-        return ProjectVariables.NAME;
+        return CurrentBuild.NAME;
     }
 
     @Override
     public String getVersion() {
-        return ProjectVariables.VERSION;
+        return CurrentBuild.VERSION;
     }
 
     @Override
     public String getMinestomVersion() {
-        return ProjectVariables.MINESTOM_VERSION;
+        return CurrentBuild.MINESTOM_VERSION;
     }
 
     private void setViewDistance(String key, int value) {

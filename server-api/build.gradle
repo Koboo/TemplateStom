@@ -2,14 +2,10 @@ plugins {
     id 'java-library'
 }
 
-compileJava {
-    version = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
-    sourceCompatibility = JavaVersion.VERSION_21
-}
-
 dependencies {
     api "net.minestom:minestom-snapshots:${minestomVersion}"
     api "org.jetbrains:annotations:${annotationsVersion}"
     api "me.carleslc.Simple-YAML:Simple-Yaml:${yamlVersion}"
+
+    api "org.slf4j:slf4j-api:${slf4jVersion}"
 }

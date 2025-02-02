@@ -12,8 +12,9 @@ dependencies {
     implementation "org.jetbrains:annotations:${annotationsVersion}"
     implementation "me.carleslc.Simple-YAML:Simple-Yaml:${yamlVersion}"
 
-    implementation "org.tinylog:slf4j-tinylog:${tinylogVersion}"
-    implementation "org.tinylog:tinylog-impl:${tinylogVersion}"
+    implementation "org.slf4j:jul-to-slf4j:${slf4jVersion}"
+    implementation "ch.qos.logback:logback-core:${logbackVersion}"
+    implementation "ch.qos.logback:logback-classic:${logbackVersion}"
 
     implementation "org.fusesource.jansi:jansi:2.4.1"
     implementation "org.jline:jline:3.28.0"
@@ -21,22 +22,40 @@ dependencies {
     implementation project(':server-api')
 }
 
+def gitCommit = "git rev-parse --verify --short HEAD".execute().text.trim()
+def gitBranch = "git rev-parse --abbrev-ref HEAD".execute().text.trim()
+
+def buildGradle = "Gradle ${gradle.gradleVersion}"
+def buildJDK = "JDK ${System.properties['java.version']} (${System.properties['java.vendor']})"
+def buildJVM = "JVM ${System.properties['java.vm.version']} (${System.properties['java.vm.vendor']})"
+def buildOS = "${System.properties['os.name']} (${System.properties['os.arch']} ${System.properties['os.version']})"
+
 shadowJar {
     manifest {
         attributes(
-                'Main-Class': mainClassName,
-                'Implementation-Title': rootProject.name,
-                'Implementation-Version': rootProject.version,
-                'Build-Timestamp': new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
-                'Created-By': "Gradle ${gradle.gradleVersion}",
-                'Build-Jdk': "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
-                'Build-OS': "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}"
+                "Main-Class": mainClassName,
+                "Implementation-Title": rootProject.name,
+                "Implementation-Version": rootProject.version,
+                "Implementation-Group": rootProject.group,
+                "Git-Revision": gitCommit,
+                "Git-Branch": gitBranch,
+                "Build-Gradle": buildGradle,
+                "Build-JDK": buildJDK,
+                "Build-JVM": buildJVM,
+                "Build-OS": buildOS
         )
     }
 }
 
 blossom {
-    replaceToken 'PROJECT_NAME', rootProject.name
-    replaceToken 'PROJECT_VERSION', rootProject.version
-    replaceToken 'DEP_MINESTOM_VERSION', "${minestomVersion}"
+    replaceToken("PROJECT_NAME", rootProject.name)
+    replaceToken("PROJECT_VERSION", rootProject.version)
+    replaceToken("PROJECT_GROUP", rootProject.group)
+    replaceToken("DEP_MINESTOM", minestomVersion)
+    replaceToken("GIT_COMMIT", gitCommit)
+    replaceToken("GIT_BRANCH", gitBranch)
+    replaceToken("BUILD_GRADLE", buildGradle)
+    replaceToken("BUILD_JDK", buildJDK)
+    replaceToken("BUILD_JVM", buildJVM)
+    replaceToken("BUILD_OS", buildOS)
 }
