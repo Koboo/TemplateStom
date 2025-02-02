@@ -2,8 +2,8 @@ import java.text.SimpleDateFormat
 
 plugins {
     id 'application'
-    id 'com.github.johnrengelman.shadow' version "${shadowVersion}"
-    id 'net.kyori.blossom' version "${blossomVersion}"
+    id 'com.gradleup.shadow' version "8.3.5"
+    id 'net.kyori.blossom' version "1.2.1"
 }
 
 compileJava {
