@@ -7,14 +7,16 @@ plugins {
 mainClassName = 'eu.koboo.minestom.Launch'
 
 dependencies {
+
     implementation "net.minestom:minestom-snapshots:${minestomVersion}"
     implementation "org.jetbrains:annotations:${annotationsVersion}"
     implementation "me.carleslc.Simple-YAML:Simple-Yaml:${yamlVersion}"
 
     implementation "org.tinylog:slf4j-tinylog:${tinylogVersion}"
     implementation "org.tinylog:tinylog-impl:${tinylogVersion}"
-    implementation "org.fusesource.jansi:jansi:${jansiVersion}"
-    implementation "org.jline:jline:${jlineVersion}"
+
+    implementation "org.fusesource.jansi:jansi:2.4.1"
+    implementation "org.jline:jline:3.28.0"
 
     implementation project(':server-api')
 }
