@@ -1,7 +1,5 @@
 plugins {
-    id 'java'
-    id 'com.github.johnrengelman.shadow' version "${shadowVersion}"
-    id 'net.kyori.blossom' version "${blossomVersion}"
+    id 'java-library'
 }
 
 compileJava {
@@ -11,10 +9,7 @@ compileJava {
 }
 
 dependencies {
-    implementation "net.minestom:minestom-snapshots:${minestomVersion}"
-    implementation "org.jetbrains:annotations:${annotationsVersion}"
-    implementation "me.carleslc.Simple-YAML:Simple-Yaml:${yamlVersion}"
-
-    compileOnly "org.projectlombok:lombok:${lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    api "net.minestom:minestom-snapshots:${minestomVersion}"
+    api "org.jetbrains:annotations:${annotationsVersion}"
+    api "me.carleslc.Simple-YAML:Simple-Yaml:${yamlVersion}"
 }

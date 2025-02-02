@@ -1,31 +1,45 @@
+plugins {
+    id 'java'
+    id 'com.gradleup.shadow' version '8.3.5'
+    id 'net.kyori.blossom' version '1.3.1'
+}
+
 allprojects {
 
     apply plugin: 'java'
+    apply plugin: 'com.gradleup.shadow'
+    apply plugin: 'net.kyori.blossom'
 
-    group "eu.koboo"
-    version "1.0.3"
+    group 'eu.koboo'
+    version '1.0.3'
+
+    def javaVersion = JavaVersion.VERSION_21
 
     repositories {
         mavenCentral()
         maven {
-            // Minestom
+            name 'jitpack-repo'
             url 'https://jitpack.io'
-        }
-
-        maven {
-            // Dependencies
-            url 'https://repo.spongepowered.org/maven'
         }
     }
 
+    compileJava {
+        version = javaVersion
+        targetCompatibility = javaVersion
+        sourceCompatibility = javaVersion
+    }
+    java {
+        toolchain.languageVersion.set(JavaLanguageVersion.of(javaVersion.getMajorVersion()))
+    }
+
+    dependencies {
+        compileOnly "org.projectlombok:lombok:${lombokVersion}"
+        annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    }
 }
 
-group "${authorGroup}"
-version "${authorVersion}"
-
-task cleanProject(type: Delete) {
+tasks.register('cleanProject', Delete) {
     delete file('logs/')
-    delete file('extensions/')
     delete file('configs/')
     delete rootProject.buildDir
     delete project(':server-api').buildDir

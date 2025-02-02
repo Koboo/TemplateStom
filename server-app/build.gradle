@@ -2,32 +2,21 @@ import java.text.SimpleDateFormat
 
 plugins {
     id 'application'
-    id 'com.gradleup.shadow' version "8.3.5"
-    id 'net.kyori.blossom' version "1.2.1"
-}
-
-compileJava {
-    version = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
-    sourceCompatibility = JavaVersion.VERSION_21
 }
 
 mainClassName = 'eu.koboo.minestom.Launch'
 
 dependencies {
-    compileOnly "net.minestom:minestom-snapshots:${minestomVersion}"
-    compileOnly "org.jetbrains:annotations:${annotationsVersion}"
-    compileOnly "me.carleslc.Simple-YAML:Simple-Yaml:${yamlVersion}"
+    implementation "net.minestom:minestom-snapshots:${minestomVersion}"
+    implementation "org.jetbrains:annotations:${annotationsVersion}"
+    implementation "me.carleslc.Simple-YAML:Simple-Yaml:${yamlVersion}"
 
     implementation "org.tinylog:slf4j-tinylog:${tinylogVersion}"
     implementation "org.tinylog:tinylog-impl:${tinylogVersion}"
     implementation "org.fusesource.jansi:jansi:${jansiVersion}"
     implementation "org.jline:jline:${jlineVersion}"
 
-    compileOnly "org.projectlombok:lombok:${lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
-
-    implementation project(":server-api")
+    implementation project(':server-api')
 }
 
 shadowJar {
