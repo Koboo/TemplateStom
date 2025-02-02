@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+    <property name="LOGS_DIR" value="logs"/>
+    <property name="LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-8.8level{12} - [%-10.10thread{14}] %-40.40logger{48}: %msg%n"/>
+
+    <appender name="ROOT_CONSOLE_APPENDER" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="ROOT_FILE_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <append>true</append>
+        <file>${LOGS_DIR}/latest.log</file>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS_DIR}/%d{yyyy-MM-dd}.log</fileNamePattern>
+            <totalSizeCap>500MB</totalSizeCap>
+            <maxHistory>14</maxHistory>
+            <timeBasedFileNamingAndTriggerPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggerPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
+
+    <root level="info">
+        <appender-ref ref="ROOT_CONSOLE_APPENDER"/>
+        <appender-ref ref="ROOT_FILE_APPENDER"/>
+    </root>
+
+</configuration>
