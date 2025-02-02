@@ -34,9 +34,9 @@ public class ServerConfig {
     int compressionThreshold = -1;
 
     @Setting("network.proxy-mode")
-    ProxyMode proxyMode = ProxyMode.VELOCITY;
+    String proxyMode = ProxyMode.VELOCITY.name();
 
-    @Setting("network.proxy-mode")
+    @Setting("network.velocity-secret")
     String velocitySecret = "INSERT_SECRET_HERE";
 
     @Setting("gameplay.difficulty")

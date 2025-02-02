@@ -1,5 +1,6 @@
 package eu.koboo.minestom.server;
 
+import eu.koboo.minestom.api.config.ProxyMode;
 import eu.koboo.minestom.api.config.ServerConfig;
 import eu.koboo.minestom.api.server.Server;
 import eu.koboo.minestom.commands.CommandStop;
@@ -103,7 +104,7 @@ public class ServerImpl extends Server {
         setViewDistance("minestom.chunk-view-distance", serverConfig.getChunkViewDistance());
         setViewDistance("minestom.entity-view-distance", serverConfig.getEntityViewDistance());
 
-        switch (serverConfig.getProxyMode()) {
+        switch (ProxyMode.valueOf(serverConfig.getProxyMode())) {
             case NONE -> {
                 if (serverConfig.isOnlineMode()) {
                     MojangAuth.init();
