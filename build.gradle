@@ -2,8 +2,8 @@ allprojects {
 
     apply plugin: 'java'
 
-    group "${authorGroup}"
-    version "${authorVersion}"
+    group "eu.koboo"
+    version "1.0.3"
 
     repositories {
         mavenCentral()
