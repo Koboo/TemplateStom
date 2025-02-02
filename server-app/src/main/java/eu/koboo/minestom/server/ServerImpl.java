@@ -42,14 +42,16 @@ public class ServerImpl extends Server {
 
         instance = this;
 
-        log.info("Loading settings..");
+        log.info("Loading configuration..");
         File configFile = new File(ServerConfig.FILE_NAME);
+        log.info("  - location: {}", configFile.getAbsolutePath());
         try {
             YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
                     .file(configFile)
                     .nodeStyle(NodeStyle.BLOCK)
                     .build();
             if (!configFile.exists()) {
+                log.info("Exporting default configuration!");
                 CommentedConfigurationNode node = loader.createNode(ConfigurationOptions.defaults());
                 node.set(ServerConfig.class, new ServerConfig());
                 loader.save(node);
