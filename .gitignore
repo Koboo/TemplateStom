@@ -1,10 +1,9 @@
 # Minestom
 minecraft_data/
 instances/
-extensions/
 .minestom_tmp
 logs/
-server_config.yml
+configuration.yml
 
 # Ignored
 server-app/build/

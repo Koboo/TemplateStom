@@ -40,7 +40,7 @@ allprojects {
 
 tasks.register('cleanProject', Delete) {
     delete file('logs/')
-    delete file('configs/')
+    delete file('configuration.yml')
     delete rootProject.buildDir
     delete project(':server-api').buildDir
     delete project(':server-app').buildDir

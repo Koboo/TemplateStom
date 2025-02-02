@@ -4,7 +4,6 @@ import eu.koboo.minestom.api.config.ServerConfig;
 import eu.koboo.minestom.api.server.Server;
 import eu.koboo.minestom.commands.CommandStop;
 import eu.koboo.minestom.commands.CommandVersion;
-import eu.koboo.minestom.config.ConfigLoader;
 import eu.koboo.minestom.console.JLineConsole;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +17,13 @@ import net.minestom.server.extras.velocity.VelocityProxy;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.InstanceManager;
 import net.minestom.server.instance.block.Block;
+import net.minestom.server.world.Difficulty;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.ConfigurationOptions;
+import org.spongepowered.configurate.yaml.NodeStyle;
+import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
+
+import java.io.File;
 
 @Slf4j
 public class ServerImpl extends Server {
@@ -36,7 +42,22 @@ public class ServerImpl extends Server {
         instance = this;
 
         log.info("Loading settings..");
-        serverConfig = ConfigLoader.loadConfig();
+        File configFile = new File(ServerConfig.FILE_NAME);
+        try {
+            YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
+                    .file(configFile)
+                    .nodeStyle(NodeStyle.BLOCK)
+                    .build();
+            if (!configFile.exists()) {
+                CommentedConfigurationNode node = loader.createNode(ConfigurationOptions.defaults());
+                node.set(ServerConfig.class, new ServerConfig());
+                loader.save(node);
+            }
+            CommentedConfigurationNode node = loader.load();
+            serverConfig = node.get(ServerConfig.class);
+        } catch (Exception e) {
+            throw new RuntimeException("Error while exporting default configuration", e);
+        }
 
         log.info("Initializing console..");
         console = new JLineConsole();
@@ -48,7 +69,7 @@ public class ServerImpl extends Server {
                 .setExceptionHandler(exc -> log.error("An unexpected error occurred! ", exc));
 
         log.info("Registering commands..");
-        MinecraftServer.getCommandManager().register(new CommandStop());
+        MinecraftServer.getCommandManager().register(new CommandStop(this));
         MinecraftServer.getCommandManager().register(new CommandVersion());
 
         log.info("Creating instance..");
@@ -71,20 +92,20 @@ public class ServerImpl extends Server {
             event.getPlayer().setRespawnPoint(new Pos(0, 41, 0));
         });
 
-        String host = serverConfig.host();
-        int port = serverConfig.port();
+        String host = serverConfig.getHost();
+        int port = serverConfig.getPort();
 
         MinecraftServer.setBrandName(this.getName());
-        MinecraftServer.setDifficulty(serverConfig.difficulty());
+        MinecraftServer.setDifficulty(Difficulty.valueOf(serverConfig.getDifficulty()));
 
-        MinecraftServer.setCompressionThreshold(serverConfig.compressionThreshold());
+        MinecraftServer.setCompressionThreshold(serverConfig.getCompressionThreshold());
 
-        setViewDistance("minestom.chunk-view-distance", serverConfig.chunkViewDistance());
-        setViewDistance("minestom.entity-view-distance", serverConfig.entityViewDistance());
+        setViewDistance("minestom.chunk-view-distance", serverConfig.getChunkViewDistance());
+        setViewDistance("minestom.entity-view-distance", serverConfig.getEntityViewDistance());
 
-        switch (serverConfig.proxyMode()) {
+        switch (serverConfig.getProxyMode()) {
             case NONE -> {
-                if (serverConfig.onlineMode()) {
+                if (serverConfig.isOnlineMode()) {
                     MojangAuth.init();
                     log.info("ProxyMode 'NONE', enabled MojangAuth.");
                 } else {
@@ -92,12 +113,13 @@ public class ServerImpl extends Server {
                 }
             }
             case VELOCITY -> {
-                if (serverConfig.velocitySecret() == null || serverConfig.velocitySecret().equalsIgnoreCase("")) {
+                String velocitySecret = serverConfig.getVelocitySecret();
+                if (velocitySecret == null || velocitySecret.equalsIgnoreCase("")) {
                     log.warn("ProxyMode 'VELOCITY' selected, but no proxy-secret set! Abort!");
                     System.exit(0);
                     break;
                 }
-                VelocityProxy.enable(serverConfig.velocitySecret());
+                VelocityProxy.enable(velocitySecret);
                 log.info("ProxyMode 'VELOCITY', enabled VelocityProxy.");
             }
             case BUNGEECORD -> {
@@ -117,6 +139,12 @@ public class ServerImpl extends Server {
         timeToStartInSeconds = Math.round(timeToStartInSeconds);
         timeToStartInSeconds /= 100;
         log.info("Started in {}s!", timeToStartInSeconds);
+    }
+
+    public void stop() {
+        log.info("Stopping..");
+        MinecraftServer.stopCleanly();
+        log.info("Goodbye!");
     }
 
     @Override

@@ -5,7 +5,6 @@ plugins {
 dependencies {
     api "net.minestom:minestom-snapshots:${minestomVersion}"
     api "org.jetbrains:annotations:${annotationsVersion}"
-    api "me.carleslc.Simple-YAML:Simple-Yaml:${yamlVersion}"
-
+    api "org.spongepowered:configurate-yaml:${configurateVersion}"
     api "org.slf4j:slf4j-api:${slf4jVersion}"
 }
